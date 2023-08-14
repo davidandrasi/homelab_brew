@@ -1,0 +1,14 @@
+[http.routers]
+# Define a connection between requests and services
+     [http.routers.portainer]
+       rule = "Host(`portainer.mydomainname.duckdns.org`)" # update the hostname in the same way as in the .env file, like portainer.mydomainname.duckdns.org
+        entrypoints = ["websecure"]
+        service = "portainer"
+     [http.routers.portainer.tls]
+        certResolver = "myresolver"
+
+[http.services]
+# Define how to reach an existing service on our infrastructure  
+     [http.services.portainer.loadBalancer]
+        [[http.services.portainer.loadBalancer.servers]]
+          url = "http://192.168.0.1:9000" # update 192.168.0.1 ip address with the local ip addess of your raspberry pi, the port shall remain the same
