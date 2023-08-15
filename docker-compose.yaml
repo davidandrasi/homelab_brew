@@ -110,7 +110,7 @@ services:
     restart: "unless-stopped"
     volumes:
       - "${CONFIG_PATH}/jellyfin:/config"
-      - "${JELLYFIN_TRANCODE_CACHE}:/transcodes"
+      - "${JELLYFIN_TRANSCODE_CACHE}:/transcodes"
       - "${HDD_PATH_SHARED}:/data/shared_downloads"
 
   dokuwiki:
@@ -235,7 +235,7 @@ services:
       - "--providers.file.filename=/etc/traefik/rules.toml"
       - "--providers.file.watch=true"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-      - "--certificatesresolvers.myresolver.acme.email=${EMAIL}"
+      - "--certificatesresolvers.myresolver.acme.email=${CERT_EMAIL}"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"

@@ -31,26 +31,31 @@ Docker containers for Raspberry Pi based Advanced Home Server
 
 ## Preparation
 
-- Clone repository
+- Clone the repository
 - Create the following folders from the .env file:
   - HDD_PATH_SHARED
   - CONFIG_PATH
-  - JELLYFIN_TRANCODE_CACHE
+  - JELLYFIN_TRANSCODE_CACHE
   - ${HDD_PATH_SHARED}/downloads
 - Copy configurations (docker_appdata folder) from repository to CONFIG_PATH
 
 ---
 
-## Configuration
+## Configure the environment
 
 - Setup Duckdns: Register and login to <https://www.duckdns.org/>, and add a subdomain you wish
-- Set Jellyfin custom transcode cache path: <https://github.com/jellyfin/jellyfin/issues/2189#issuecomment-568740643>  
-(This step is a must, if you want to save space during Jellyfin streaming with transcoding, since it is generating huge files, so I suggest to put it into the HDD)
 - sudo chmod 600 docker_appdata/letsencrypt/acme.json
 - Update .env file based on the comments in the file
 - update ${CONFIG_PATH}/traefik/rules.toml based on the comments in the file
 - sudo docker-compose up -d --force-recreate
 - You can reach each container with the address defined in the .env file
+
+---
+
+## Configure the containers
+
+- Set Jellyfin custom transcode cache path: <https://github.com/jellyfin/jellyfin/issues/2189#issuecomment-568740643>  
+(This step is a must, if you want to save space during Jellyfin streaming with transcoding, since it is generating huge files, so I suggest to put it into the HDD)
 
 ---
 
