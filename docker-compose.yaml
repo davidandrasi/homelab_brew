@@ -1,233 +1,6 @@
 version: "3.6"
 services:
-  whoami:
-    container_name: "whoami"
-    image: "containous/whoami:latest"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.whoami.entrypoints: "websecure"
-      traefik.http.routers.whoami.rule: "Host(`${TRAEFIK_WHOAMI_HOST}`)"
-      traefik.http.routers.whoami.tls.certresolver: "myresolver"
-    network_mode: "bridge"
-    restart: "unless-stopped"
-
-  samba:
-    command:
-      - "-n"
-      - "-u"
-      - "${SAMBA_USERNAME};${SAMBA_PASSWORD}"
-      - "-s"
-      - "shared;/rpi_shared;yes;no;no;admin;admin;admin"
-      - "-s"
-      - "rpi_brew;/rpi_brew;yes;no;no;admin;admin;admin"
-      - "-p"
-    container_name: "samba"
-    image: "dperson/samba:latest"
-    network_mode: "bridge"
-    ports:
-      - "137:137/udp"
-      - "138:138/udp"
-      - "139:139/tcp"
-      - "445:445/tcp"
-    restart: "unless-stopped"
-    volumes:
-      - "${HDD_PATH_SHARED}:/rpi_shared"
-      - "/home/pi/rpi_brew:/rpi_brew" # TODO remove
-
-  minidlna:
-    container_name: "minidlna"
-    environment:
-      - "MINIDLNA_MEDIA_DIR=/media"
-      - "MINIDLNA_FRIENDLY_NAME=${MINIDLNA_FRIENDLY_NAME}"
-    hostname: "raspberrypi"
-    image: "vladgh/minidlna:latest"
-    network_mode: "bridge"
-    ports:
-      - "8200:8200/tcp"
-    restart: "unless-stopped"
-    volumes:
-      - "${HDD_PATH_SHARED}:/media"
-
-  wikijs:
-    container_name: "wikijs"
-    image: "linuxserver/wikijs:latest"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.wikijs.entrypoints: "websecure"
-      traefik.http.routers.wikijs.rule: "Host(`${TRAEFIK_WIKIJS_HOST}`)"
-      traefik.http.routers.wikijs.tls.certresolver: "myresolver"
-    network_mode: "bridge"
-    ports:
-      - "3100:3000/tcp"
-    restart: "unless-stopped"
-    volumes:
-      - "${CONFIG_PATH}/wikijs/data:/data"
-      - "${CONFIG_PATH}/wikijs:/config"
-
-  librespeed:
-    container_name: "librespeed"
-    image: "linuxserver/librespeed:latest"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.librespeed.entrypoints: "websecure"
-      traefik.http.routers.librespeed.rule: "Host(`${TRAEFIK_LIBRESPEED_HOST}`)"
-      traefik.http.routers.librespeed.tls.certresolver: "myresolver"
-    network_mode: "bridge"
-    restart: "unless-stopped"
-
-  filebrowser:
-    container_name: "filebrowser"
-    image: "hurlenko/filebrowser:latest"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.filebrowser.entrypoints: "websecure"
-      traefik.http.routers.filebrowser.rule: "Host(`${TRAEFIK_FILEBROWSER_HOST}`)"
-      traefik.http.routers.filebrowser.tls.certresolver: "myresolver"
-    network_mode: "bridge"
-    ports:
-      - "8081:8081/tcp"
-    restart: "unless-stopped"
-    volumes:
-      - "${CONFIG_PATH}/filebrowser:/config"
-      - "${HDD_PATH_SHARED}:/data"
-
-  jellyfin:
-    container_name: "jellyfin"
-    environment:
-      - "PGID=${PGID}"
-      - "PUID=${PUID}"
-      - "TZ=${TZ}"
-    image: "linuxserver/jellyfin:latest"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.jellyfin.entrypoints: "websecure"
-      traefik.http.routers.jellyfin.rule: "Host(`${TRAEFIK_JELLYFIN_HOST}`)"
-      traefik.http.routers.jellyfin.tls.certresolver: "myresolver"
-    network_mode: "bridge"
-    ports:
-      - "8096:8096/tcp"
-      - "8920:8920/tcp"
-    restart: "unless-stopped"
-    volumes:
-      - "${CONFIG_PATH}/jellyfin:/config"
-      - "${JELLYFIN_TRANSCODE_CACHE}:/transcodes"
-      - "${HDD_PATH_SHARED}:/data/shared_downloads"
-
-  dokuwiki:
-    container_name: "dokuwiki"
-    environment:
-      - "PGID=${PGID}"
-      - "PUID=${PUID}"
-      - "TZ=${TZ}"
-    image: "ghcr.io/linuxserver/dokuwiki:latest"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.dokuwiki.entrypoints: "websecure"
-      traefik.http.routers.dokuwiki.rule: "Host(`${TRAEFIK_DOKUWIKI_HOST}`)"
-      traefik.http.routers.dokuwiki.tls.certresolver: "myresolver"
-    network_mode: "bridge"
-    restart: "unless-stopped"
-    volumes:
-      - "${CONFIG_PATH}/dokuwiki:/config"
-
-  duckdns:
-    container_name: "duckdns"
-    environment:
-      - "PGID=${PGID}"
-      - "PUID=${PUID}"
-      - "TZ=${TZ}"
-      - "SUBDOMAINS=${SUBDOMAINS}"
-      - "TOKEN=${TOKEN}"
-    image: "linuxserver/duckdns:latest"
-    network_mode: "bridge"
-    restart: "unless-stopped"
-    volumes:
-      - "${CONFIG_PATH}/duckdns:/config"
-
-  watchtower:
-    container_name: "watchtower"
-    environment:
-      - "WATCHTOWER_CLEANUP=${WATCHTOWER_CLEANUP}"
-      - "WATCHTOWER_POLL_INTERVAL=${WATCHTOWER_POLL_INTERVAL}"
-    image: "containrrr/watchtower:latest"
-    network_mode: "bridge"
-    restart: "unless-stopped"
-    stdin_open: true
-    tty: true
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-
-  qbittorrent:
-    container_name: "qbittorrent"
-    environment:
-      - "PGID=${PGID}"
-      - "PUID=${PUID}"
-      - "TZ=${TZ}"
-      - "UMASK=022"
-      - "WEBUI_PORT=${WEBUI_PORT}"
-    image: "linuxserver/qbittorrent:latest"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.qbittorrent.entrypoints: "websecure"
-      traefik.http.routers.qbittorrent.rule: "Host(`${TRAEFIK_QBITTORRENT_HOST}`)"
-      traefik.http.routers.qbittorrent.tls.certresolver: "myresolver"
-    network_mode: "bridge"
-    ports:
-      - "5555:5555/tcp"
-      - "6881:6881/tcp"
-      - "6881:6881/udp"
-    restart: "unless-stopped"
-    volumes:
-      - "${CONFIG_PATH}/qbittorrent:/config"
-      - "${HDD_PATH_SHARED}/downloads:/downloads"
-
-  pihole:
-    container_name: "pihole"
-    environment:
-      - "TZ=${TZ}"
-      - "WEBPASSWORD=${WEBPASSWORD}"
-      - "DNSMASQ_USER=${DNSMASQ_USER}"
-      - "VIRTUAL_HOST=${TRAEFIK_PIHOLE_HOST}"
-    image: "pihole/pihole:latest"
-    labels:
-      traefik.enable: "true"
-      traefik.http.middlewares.pihole-admin.addprefix.prefix: "/admin"
-      traefik.http.routers.pihole.rule: "Host(`${TRAEFIK_PIHOLE_HOST}`)"
-      traefik.http.routers.pihole.service: "pihole"
-      traefik.http.routers.pihole.tls: "true"
-      traefik.http.routers.pihole.tls.certresolver: "myresolver"
-      traefik.http.routers.pihole_http.entrypoints: "web"
-      traefik.http.routers.pihole_http.middlewares: "pihole-admin"
-      traefik.http.routers.pihole_http.rule: "Host(`${TRAEFIK_PIHOLE_HOST}`)"
-      traefik.http.services.pihole.loadBalancer.server.port: "80"
-    network_mode: "bridge"
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "67:67/udp"
-      - "88:80/tcp"
-    restart: "unless-stopped"
-    volumes:
-      - "${CONFIG_PATH}/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
-      - "${CONFIG_PATH}/pihole/etc-pihole:/etc/pihole"
-
-  heimdall:
-    container_name: "heimdall"
-    environment:
-      - "TZ=${TZ}"
-      - "PGID=1000"
-      - "PUID=1000"
-    image: "lscr.io/linuxserver/heimdall:latest"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.heimdall.entrypoints: "websecure"
-      traefik.http.routers.heimdall.rule: "Host(`${TRAEFIK_DEFAULT_HOST}`, `${TRAEFIK_HEIMDALL_HOST}`, `${TRAEFIK_HOME_HOST}`)"
-      traefik.http.routers.heimdall.tls.certresolver: "myresolver"
-    network_mode: "bridge"
-    restart: "unless-stopped"
-    volumes:
-      - "${CONFIG_PATH}/heimdall:/config"
-
+  ###### Traefik ######
   traefik:
     command:
       - "traefik"
@@ -255,6 +28,8 @@ services:
       traefik.http.routers.api.rule: "Host(`${TRAEFIK_TRAEFIK_HOST}`)"
       traefik.http.routers.api.service: "api@internal"
       traefik.http.routers.api.tls.certresolver: "myresolver"
+      traefik.http.routers.api.middlewares: "auth"
+      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
     network_mode: "bridge"
     ports:
       - "443:443/tcp"
@@ -267,6 +42,7 @@ services:
       - "${CONFIG_PATH}/traefik/rules.toml:/etc/traefik/rules.toml"
       - "/var/run/docker.sock:/var/run/docker.sock"
 
+  ###### Portainer ######
   portainer:
     container_name: "portainer"
     image: "portainer/portainer-ce"
@@ -278,6 +54,265 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "portainer_data:/data"
 
+  ###### Whoami ######
+  whoami:
+    container_name: "whoami"
+    image: "containous/whoami:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.whoami.entrypoints: "websecure"
+      traefik.http.routers.whoami.rule: "Host(`${TRAEFIK_WHOAMI_HOST}`)"
+      traefik.http.routers.whoami.tls.certresolver: "myresolver"
+      traefik.http.routers.whoami.middlewares: "auth"
+      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+    network_mode: "bridge"
+    restart: "unless-stopped"
+
+  ###### Samba ######
+  samba:
+    command:
+      - "-n"
+      - "-u"
+      - "${SAMBA_USERNAME};${SAMBA_PASSWORD}"
+      - "-s"
+      - "shared;/rpi_shared;yes;no;no;admin;admin;admin"
+      - "-s"
+      - "docker_compose;/docker_compose;yes;no;no;admin;admin;admin"
+      - "-s"
+      - "rpi_brew;/rpi_brew;yes;no;no;admin;admin;admin"
+      - "-p"
+    container_name: "samba"
+    image: "dperson/samba:latest"
+    network_mode: "bridge"
+    ports:
+      - "137:137/udp"
+      - "138:138/udp"
+      - "139:139/tcp"
+      - "445:445/tcp"
+    restart: "unless-stopped"
+    volumes:
+      - "${HDD_PATH_SHARED}:/rpi_shared"
+      - "/home/pi/rpi_brew:/rpi_brew" # TODO remove
+      - "/home/pi/docker_compose:/docker_compose" # TODO remove
+
+  ###### Minidlna ######
+  minidlna:
+    container_name: "minidlna"
+    environment:
+      - "MINIDLNA_MEDIA_DIR=/media"
+      - "MINIDLNA_FRIENDLY_NAME=${MINIDLNA_FRIENDLY_NAME}"
+    hostname: "raspberrypi"
+    image: "vladgh/minidlna:latest"
+    network_mode: "bridge"
+    ports:
+      - "8200:8200/tcp"
+    restart: "unless-stopped"
+    volumes:
+      - "${HDD_PATH_SHARED}:/media"
+
+  ###### Wikijs ######
+  wikijs:
+    container_name: "wikijs"
+    image: "linuxserver/wikijs:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.wikijs.entrypoints: "websecure"
+      traefik.http.routers.wikijs.rule: "Host(`${TRAEFIK_WIKIJS_HOST}`)"
+      traefik.http.routers.wikijs.tls.certresolver: "myresolver"
+      traefik.http.routers.wikijs.middlewares: "auth"
+      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+    network_mode: "bridge"
+    ports:
+      - "3100:3000/tcp"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/wikijs/data:/data"
+      - "${CONFIG_PATH}/wikijs:/config"
+
+  ###### Librespeed ######
+  librespeed:
+    container_name: "librespeed"
+    image: "linuxserver/librespeed:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.librespeed.entrypoints: "websecure"
+      traefik.http.routers.librespeed.rule: "Host(`${TRAEFIK_LIBRESPEED_HOST}`)"
+      traefik.http.routers.librespeed.tls.certresolver: "myresolver"
+      traefik.http.routers.librespeed.middlewares: "auth"
+      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+    network_mode: "bridge"
+    restart: "unless-stopped"
+
+  ###### Fliebrowser ######
+  filebrowser:
+    container_name: "filebrowser"
+    image: "hurlenko/filebrowser:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.filebrowser.entrypoints: "websecure"
+      traefik.http.routers.filebrowser.rule: "Host(`${TRAEFIK_FILEBROWSER_HOST}`)"
+      traefik.http.routers.filebrowser.tls.certresolver: "myresolver"
+    network_mode: "bridge"
+    ports:
+      - "8081:8081/tcp"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/filebrowser:/config"
+      - "${HDD_PATH_SHARED}:/data"
+
+  ###### Jellyfin ######
+  jellyfin:
+    container_name: "jellyfin"
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+    image: "linuxserver/jellyfin:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.jellyfin.entrypoints: "websecure"
+      traefik.http.routers.jellyfin.rule: "Host(`${TRAEFIK_JELLYFIN_HOST}`)"
+      traefik.http.routers.jellyfin.tls.certresolver: "myresolver"
+    network_mode: "bridge"
+    ports:
+      - "8096:8096/tcp"
+      - "8920:8920/tcp"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/jellyfin:/config"
+      - "${JELLYFIN_TRANSCODE_CACHE}:/transcodes"
+      - "${HDD_PATH_SHARED}:/data/shared_downloads"
+
+  ###### Dokuwiki ######
+  dokuwiki:
+    container_name: "dokuwiki"
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+    image: "ghcr.io/linuxserver/dokuwiki:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.dokuwiki.entrypoints: "websecure"
+      traefik.http.routers.dokuwiki.rule: "Host(`${TRAEFIK_DOKUWIKI_HOST}`)"
+      traefik.http.routers.dokuwiki.tls.certresolver: "myresolver"
+      traefik.http.routers.dokuwiki.middlewares: "auth"
+      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+    network_mode: "bridge"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/dokuwiki:/config"
+
+  ###### Duckdns ######
+  duckdns:
+    container_name: "duckdns"
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+      - "SUBDOMAINS=${SUBDOMAINS}"
+      - "TOKEN=${TOKEN}"
+    image: "linuxserver/duckdns:latest"
+    network_mode: "bridge"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/duckdns:/config"
+
+  ###### Watchtower ######
+  watchtower:
+    container_name: "watchtower"
+    environment:
+      - "WATCHTOWER_CLEANUP=${WATCHTOWER_CLEANUP}"
+      - "WATCHTOWER_POLL_INTERVAL=${WATCHTOWER_POLL_INTERVAL}"
+    image: "containrrr/watchtower:latest"
+    network_mode: "bridge"
+    restart: "unless-stopped"
+    stdin_open: true
+    tty: true
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  ###### Qbittorrent ######
+  qbittorrent:
+    container_name: "qbittorrent"
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+      - "UMASK=022"
+      - "WEBUI_PORT=${WEBUI_PORT}"
+    image: "linuxserver/qbittorrent:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.qbittorrent.entrypoints: "websecure"
+      traefik.http.routers.qbittorrent.rule: "Host(`${TRAEFIK_QBITTORRENT_HOST}`)"
+      traefik.http.routers.qbittorrent.tls.certresolver: "myresolver"
+      traefik.http.routers.qbittorrent.middlewares: "auth"
+      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+    network_mode: "bridge"
+    ports:
+      - "5555:5555/tcp"
+      - "6881:6881/tcp"
+      - "6881:6881/udp"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/qbittorrent:/config"
+      - "${HDD_PATH_SHARED}/downloads:/downloads"
+
+  ###### Pihole ######
+  pihole:
+    container_name: "pihole"
+    environment:
+      - "TZ=${TZ}"
+      - "WEBPASSWORD=${WEBPASSWORD}"
+      - "DNSMASQ_USER=${DNSMASQ_USER}"
+      - "VIRTUAL_HOST=${TRAEFIK_PIHOLE_HOST}"
+    image: "pihole/pihole:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.middlewares.pihole-admin.addprefix.prefix: "/admin"
+      traefik.http.routers.pihole.rule: "Host(`${TRAEFIK_PIHOLE_HOST}`)"
+      traefik.http.routers.pihole.service: "pihole"
+      traefik.http.routers.pihole.tls: "true"
+      traefik.http.routers.pihole.tls.certresolver: "myresolver"
+      traefik.http.routers.pihole_http.entrypoints: "web"
+      traefik.http.routers.pihole_http.middlewares: "pihole-admin, auth"
+      traefik.http.routers.pihole_http.rule: "Host(`${TRAEFIK_PIHOLE_HOST}`)"
+      traefik.http.services.pihole.loadBalancer.server.port: "80"
+      traefik.http.routers.pihole.middlewares: "auth"
+      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+    network_mode: "bridge"
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "88:80/tcp"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
+      - "${CONFIG_PATH}/pihole/etc-pihole:/etc/pihole"
+
+  ###### Heimdall ######
+  heimdall:
+    container_name: "heimdall"
+    environment:
+      - "TZ=${TZ}"
+      - "PGID=1000"
+      - "PUID=1000"
+    image: "lscr.io/linuxserver/heimdall:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.heimdall.entrypoints: "websecure"
+      traefik.http.routers.heimdall.rule: "Host(`${TRAEFIK_DEFAULT_HOST}`, `${TRAEFIK_HEIMDALL_HOST}`, `${TRAEFIK_HOME_HOST}`)"
+      traefik.http.routers.heimdall.tls.certresolver: "myresolver"
+      traefik.http.routers.heimdall.middlewares: "auth"
+      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+    network_mode: "bridge"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/heimdall:/config"
+
+  ###### Yacht ######
   yacht:
     container_name: "yacht"
     image: "selfhostedpro/yacht:latest"
