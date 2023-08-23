@@ -2,13 +2,12 @@ apiVersion: 1
 
 deleteDatasources:
   - name: Prometheus
-    orgId: 1
+#  - name: Prometheus-1
 
 datasources:
 - name: Prometheus
   type: prometheus
   access: browser
-  orgId: 1
   # Add your prometheus domain name here
   url: http://prometheus.mydomain.something.com
   password:
@@ -29,3 +28,27 @@ datasources:
     tlsClientKey: "..."
   version: 1
   editable: true
+# Sample for adding second prometheus data source
+#- name: Prometheus-1
+#  type: prometheus
+#  access: browser
+#  # Add your prometheus IP and port here
+#  url: http://192.168.0.5:9090
+#  password:
+#  user:
+#  database:
+#  basicAuth: false
+#  basicAuthUser:
+#  basicAuthPassword:
+#  withCredentials:
+#  isDefault: false
+#  jsonData:
+#     graphiteVersion: "1.1"
+#     tlsAuth: false
+#     tlsAuthWithCACert: false
+#  secureJsonData:
+#    tlsCACert: "..."
+#    tlsClientCert: "..."
+#    tlsClientKey: "..."
+#  version: 1
+#  editable: true
