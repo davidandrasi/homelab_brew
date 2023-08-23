@@ -1,5 +1,7 @@
 # RPI BREW
 
+![RPI BREW LOGO](images/rpi_brew_logo.jpeg)
+
 Docker containers for Raspberry Pi based Advanced Home Server
 
 ---
