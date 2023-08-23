@@ -19,6 +19,8 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--metrics"
+      - "--metrics.prometheus=true"
+      - "--metrics.prometheus.entryPoint=traefik"
       - "--metrics.prometheus.buckets=${PROMETHEUS_BUCKETS}"
     container_name: "traefik"
     image: "traefik:latest"
@@ -36,11 +38,89 @@ services:
       - "80:80/tcp"
       - "8080:8080/tcp"
     restart: "unless-stopped"
+    environment:
+      - "TZ=${TZ}"
     volumes:
       - "/etc/traefik/rules.yml:${CONFIG_PATH}/traefik/rules.yml"
       - "${CONFIG_PATH}/letsencrypt:/letsencrypt"
       - "${CONFIG_PATH}/traefik/rules.toml:/etc/traefik/rules.toml"
       - "/var/run/docker.sock:/var/run/docker.sock"
+
+  ###### Prometheus ######
+  prometheus:
+    container_name: "prometheus"
+    image: prom/prometheus
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ${CONFIG_PATH}/prometheus:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    network_mode: "bridge"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.prometheus.entrypoints: "websecure"
+      traefik.http.routers.prometheus.rule: "Host(`${TRAEFIK_PROMETHEUS_HOST}`)"
+      traefik.http.routers.prometheus.tls.certresolver: "myresolver"
+      traefik.http.routers.prometheus.service: "prometheus"
+      traefik.http.services.prometheus.loadbalancer.server.port: "9090"
+      traefik.docker.network: "bridge"
+      traefik.http.routers.prometheus.middlewares: "auth"
+      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+    restart: "unless-stopped"
+
+  ###### Prometheus node-exporter ######
+  prometheus-node-exporter:
+    image: prom/node-exporter:latest
+    container_name: prometheus-node-exporter
+    restart: unless-stopped
+    environment:
+      - "TZ=${TZ}"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    network_mode: "bridge"
+
+  ###### Grafana ######
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ${CONFIG_PATH}/grafana/provisioning/:/etc/grafana/provisioning/
+    env_file:
+      - ${CONFIG_PATH}/grafana/config.monitoring
+    network_mode: "bridge"
+    environment:
+      - "TZ=${TZ}"
+    user: "472" # this means, that the username is admin
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.grafana.entrypoints: "websecure"
+      traefik.http.routers.grafana.rule: "Host(`${TRAEFIK_GRAFANA_HOST}`)"
+      traefik.http.routers.grafana.tls.certresolver: "myresolver"
+      traefik.http.routers.grafana.service: "grafana"
+      traefik.http.services.grafana.loadbalancer.server.port: "3000"
+      traefik.docker.network: "bridge"
+    restart: unless-stopped
 
   ###### Portainer ######
   portainer:
@@ -67,6 +147,8 @@ services:
       traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
     network_mode: "bridge"
     restart: "unless-stopped"
+    environment:
+      - "TZ=${TZ}"
 
   ###### Samba ######
   samba:
@@ -334,3 +416,5 @@ volumes:
     external: true
   portainer_data:
     external: true
+  prometheus_data: {}
+  grafana_data: {}

@@ -3,6 +3,7 @@
 Docker containers for Raspberry Pi based Advanced Home Server
 
 ---
+
 ## Prerequisites
 
 - Raspberry Pi 2-4
@@ -46,7 +47,10 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - Setup Duckdns: Register and login to <https://www.duckdns.org/>, and add a subdomain you wish
 - sudo chmod 600 docker_appdata/letsencrypt/acme.json
 - Update .env file based on the comments in the file
-- update ${CONFIG_PATH}/traefik/rules.toml based on the comments in the file
+- Update ${CONFIG_PATH}/traefik/rules.toml based on the comments in the file
+- Update ${CONFIG_PATH}/prometheus/prometheus.yml based on the comments in the file
+- Update ${CONFIG_PATH}/grafana/provisioning/datasources/datasource.yml based on the comments in the file
+- Update ${CONFIG_PATH}/docker_appdata/grafana/config.monitoring based on the comments in the file
 - sudo docker-compose up -d --force-recreate
 - You can reach each container with the address defined in the .env file
 
@@ -59,22 +63,30 @@ Docker containers for Raspberry Pi based Advanced Home Server
 
 ---
 
-## Containers
+## Containers used
 
-- Container's original descriptions:
-  - <https://hub.docker.com/r/containous/whoami>
-  - <https://hub.docker.com/r/dperson/samba>
-  - <https://hub.docker.com/r/vladgh/minidlna>
-  - <https://hub.docker.com/r/linuxserver/wikijs>
-  - <https://hub.docker.com/r/linuxserver/librespeed>
-  - <https://hub.docker.com/r/hurlenko/filebrowser>
-  - <https://hub.docker.com/r/linuxserver/jellyfin>
-  - <https://hub.docker.com/r/linuxserver/dokuwiki>
-  - <https://hub.docker.com/r/linuxserver/duckdns>
-  - <https://hub.docker.com/r/containrrr/watchtower>
-  - <https://hub.docker.com/r/linuxserver/qbittorrent>
-  - <https://hub.docker.com/r/pihole/pihole>
-  - <https://hub.docker.com/r/linuxserver/heimdall>
-  - <https://hub.docker.com/_/traefik>
-  - <https://hub.docker.com/r/portainer/portainer-ce>
-  - <https://hub.docker.com/r/selfhostedpro/yacht>
+- <https://hub.docker.com/r/containous/whoami>
+- <https://hub.docker.com/r/dperson/samba>
+- <https://hub.docker.com/r/vladgh/minidlna>
+- <https://hub.docker.com/r/linuxserver/wikijs>
+- <https://hub.docker.com/r/linuxserver/librespeed>
+- <https://hub.docker.com/r/hurlenko/filebrowser>
+- <https://hub.docker.com/r/linuxserver/jellyfin>
+- <https://hub.docker.com/r/linuxserver/dokuwiki>
+- <https://hub.docker.com/r/linuxserver/duckdns>
+- <https://hub.docker.com/r/containrrr/watchtower>
+- <https://hub.docker.com/r/linuxserver/qbittorrent>
+- <https://hub.docker.com/r/pihole/pihole>
+- <https://hub.docker.com/r/linuxserver/heimdall>
+- <https://hub.docker.com/_/traefik>
+- <https://hub.docker.com/r/portainer/portainer-ce>
+- <https://hub.docker.com/r/selfhostedpro/yacht>
+- <https://hub.docker.com/r/prom/prometheus>
+- <https://hub.docker.com/r/prom/node-exporter>
+- <https://hub.docker.com/r/grafana/grafana>
+
+---
+
+## Useful links
+
+- <https://github.com/vegasbrianc/docker-traefik-prometheus/tree/master>

@@ -1,0 +1,3 @@
+GF_SECURITY_ADMIN_PASSWORD=password # Add your password here for grafana, the username is defined in docker-compose.yaml as user: "472", which is admin
+GF_USERS_ALLOW_SIGN_UP=false
+GF_INSTALL_PLUGINS=grafana-piechart-panel

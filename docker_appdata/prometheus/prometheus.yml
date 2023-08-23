@@ -1,0 +1,34 @@
+# https://prometheus.io/docs/prometheus/latest/configuration/configuration/
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+  external_labels:
+      monitor: 'my-project'
+
+rule_files:
+  - 'alert.rules'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+         # Add Your Prometheus host and IP here
+         - targets: ['localhost:9090']
+  - job_name: 'traefik'
+    scrape_interval: 5s
+    static_configs:
+         # Add your Raspberry Pi IP address in your home network and Traefik port here
+         # From Prometheus container point of view, only the metrics of itself can ba localhost, every other metrics to be scraped shall be IP address or domain name
+         - targets: ['192.168.X.Y:8080']
+    #dns_sd_configs:
+    #- names:
+    #  - 'tasks.traefik'
+    #  type: 'A'
+    #  port: 8080
+  - job_name: 'rpi_node_exporter'
+    scrape_interval: 5s
+    static_configs:
+         # Add your Raspberry Pi IP address in your home network and node-exporter port here
+         # From Prometheus container point of view, only the metrics of itself can ba localhost, every other metrics to be scraped shall be IP address or domain name
+         - targets: ['192.168.X.Y:9100']
