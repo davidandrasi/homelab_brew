@@ -1,0 +1,35 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/settings
+
+title: My Homepage
+
+language: en
+
+theme: dark
+
+# Values: underlined, boxed, clean, boxedWidgets
+headerStyle: underlined
+
+# cardBlur: md # sm, "", md, etc... see https://tailwindcss.com/docs/backdrop-blur
+
+# Update with the name of your service groups
+layout:
+  Utilities:
+    style: row
+    columns: 3
+  Media & Files:
+    style: row
+    columns: 3
+  Other:
+    style: row
+    columns: 4
+  Links:
+    style: row
+    columns: 5
+
+# showStats: true
+
+providers:
+  openweathermap: openweathermapapikey
+  weatherapi: weatherapiapikey

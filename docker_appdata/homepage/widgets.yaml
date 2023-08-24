@@ -1,0 +1,37 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/widgets
+
+#- logo:
+#    icon: raspberrypi.png
+
+- resources:
+    expanded: true
+    uptime: true
+    cpu: true
+    cputemp: true
+    units: metric
+    memory: true
+    # Add here your attached volume's path inside the container from the docker-compose.yaml
+    disk:
+        - /
+        - /mnt/hdd
+
+- search:
+    provider: duckduckgo
+    target: _blank
+
+- datetime:
+    text_size: md
+    format:
+        dateStyle: medium
+        timeStyle: medium
+        hour12: false
+
+- openmeteo:
+    label: Budapest
+    latitude: 47.4984
+    longitude: 19.0404
+    timezone: Europe/Budapest
+    units: metric
+    cache: 5

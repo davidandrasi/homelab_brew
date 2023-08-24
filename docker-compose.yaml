@@ -329,8 +329,6 @@ services:
       traefik.http.routers.qbittorrent.entrypoints: "websecure"
       traefik.http.routers.qbittorrent.rule: "Host(`${TRAEFIK_QBITTORRENT_HOST}`)"
       traefik.http.routers.qbittorrent.tls.certresolver: "myresolver"
-      traefik.http.routers.qbittorrent.middlewares: "auth"
-      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
     network_mode: "bridge"
     ports:
       - "5555:5555/tcp"
@@ -385,7 +383,7 @@ services:
     labels:
       traefik.enable: "true"
       traefik.http.routers.heimdall.entrypoints: "websecure"
-      traefik.http.routers.heimdall.rule: "Host(`${TRAEFIK_DEFAULT_HOST}`, `${TRAEFIK_HEIMDALL_HOST}`, `${TRAEFIK_HOME_HOST}`)"
+      traefik.http.routers.heimdall.rule: "Host(`${TRAEFIK_HEIMDALL_HOST}`)"
       traefik.http.routers.heimdall.tls.certresolver: "myresolver"
       traefik.http.routers.heimdall.middlewares: "auth"
       traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
@@ -393,6 +391,28 @@ services:
     restart: "unless-stopped"
     volumes:
       - "${CONFIG_PATH}/heimdall:/config"
+
+  ###### Homepage ######
+  homepage:
+    image: ghcr.io/benphelps/homepage:latest
+    container_name: homepage
+    ports:
+      - 3001:3000
+    environment:
+      - "TZ=${TZ}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.homepage.entrypoints: "websecure"
+      traefik.http.routers.homepage.rule: "Host(`${TRAEFIK_DEFAULT_HOST}`, `${TRAEFIK_HOMEPAGE_HOST}`)"
+      traefik.http.routers.homepage.tls.certresolver: "myresolver"
+      traefik.http.routers.homepage.middlewares: "auth"
+      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+    volumes:
+      - ${CONFIG_PATH}/homepage/:/app/config
+      - ${HDD_PATH}/:/mnt/hdd:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+    network_mode: "bridge"
 
   ###### Yacht ######
   yacht:

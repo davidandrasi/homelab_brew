@@ -1,0 +1,20 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/bookmarks
+
+- Developer:
+    - Github:
+        - icon: github-light.png
+          href: https://github.com/
+    - DockerHub:
+        - icon: docker.png
+          href: https://hub.docker.com/
+- Social:
+    - Reddit:
+        - icon: reddit.png
+          href: https://reddit.com/
+
+- Entertainment:
+    - YouTube:
+        - icon: youtube.png
+          href: https://youtube.com/

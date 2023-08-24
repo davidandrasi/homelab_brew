@@ -53,6 +53,10 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - Update ${CONFIG_PATH}/prometheus/prometheus.yml based on the comments in the file
 - Update ${CONFIG_PATH}/grafana/provisioning/datasources/datasource.yml based on the comments in the file
 - Update ${CONFIG_PATH}/docker_appdata/grafana/config.monitoring based on the comments in the file
+- Update ${CONFIG_PATH}/docker_appdata/homepage/bookmarks.yml based on the comments in the file
+- Update ${CONFIG_PATH}/docker_appdata/homepage/services.yml based on the comments in the file
+- Update ${CONFIG_PATH}/docker_appdata/homepage/settings.yml based on the comments in the file
+- Update ${CONFIG_PATH}/docker_appdata/homepage/widgets.yml based on the comments in the file
 - sudo docker-compose up -d --force-recreate
 - You can reach each container with the address defined in the .env file
 
@@ -86,9 +90,11 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - <https://hub.docker.com/r/prom/prometheus>
 - <https://hub.docker.com/r/prom/node-exporter>
 - <https://hub.docker.com/r/grafana/grafana>
+- <https://github.com/benphelps/homepage/>
 
 ---
 
 ## Useful links
 
 - <https://github.com/vegasbrianc/docker-traefik-prometheus/tree/master>
+- <https://gethomepage.dev/>
