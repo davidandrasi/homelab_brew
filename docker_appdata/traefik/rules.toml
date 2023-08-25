@@ -1,7 +1,7 @@
 [http.routers]
 # Define a connection between requests and services
      [http.routers.portainer]
-       rule = "Host(`portainer.mydomainname.duckdns.org`)" # update the hostname in the same way as in the .env file, like portainer.mydomainname.duckdns.org
+       rule = "Host(`portainer.mydomain.subdomain.com`)" # update the hostname in the same way as in the .env file, like portainer.mydomain.subdomain.con
         entrypoints = ["websecure"]
         service = "portainer"
      [http.routers.portainer.tls]

@@ -49,7 +49,7 @@ Docker containers for Raspberry Pi based Advanced Home Server
 
 ## Configure the environment
 
-- Setup Duckdns: Register and login to <https://www.duckdns.org/>, and add a subdomain you wish
+- Setup Duckdns: Register and login to <https://www.dynu.com/en-US/ControlPanel/DDNS> or <https://www.duckdns.org/>, and add a subdomain you wish
 - sudo chmod 600 docker_appdata/letsencrypt/acme.json
 - Update .env file based on the comments in the file
 - Update ${CONFIG_PATH}/traefik/rules.toml based on the comments in the file
@@ -102,5 +102,7 @@ Docker containers for Raspberry Pi based Advanced Home Server
 
 ## Useful links
 
+- <https://www.dynu.com/en-US/ControlPanel/DDNS>
+- <https://www.duckdns.org/>
 - <https://github.com/vegasbrianc/docker-traefik-prometheus/tree/master>
 - <https://gethomepage.dev/>

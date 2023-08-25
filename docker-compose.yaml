@@ -287,20 +287,35 @@ services:
     volumes:
       - "${CONFIG_PATH}/dokuwiki:/config"
 
-  ###### Duckdns ######
-  duckdns:
-    container_name: "duckdns"
+  ###### Dynu Updater ######
+  dynu-updater:
+    container_name: "dynu-updater"
     environment:
-      - "PGID=${PGID}"
-      - "PUID=${PUID}"
       - "TZ=${TZ}"
-      - "SUBDOMAINS=${SUBDOMAINS}"
-      - "TOKEN=${TOKEN}"
-    image: "linuxserver/duckdns:latest"
+      - "USERNAME=${USERNAME}"
+      - "PASSWORD=${PASSWORD}"
+      - "HOSTNAMES=${HOSTNAMES}"
+      - "REFRESH_TIME=${REFRESH_TIME}"
+    image: "dokeraj/dynu-updater:latest"
     network_mode: "bridge"
     restart: "unless-stopped"
-    volumes:
-      - "${CONFIG_PATH}/duckdns:/config"
+    ports:
+      - "1050:1050"
+
+#  ###### Duckdns ######
+#  duckdns:
+#    container_name: "duckdns"
+#    environment:
+#      - "PGID=${PGID}"
+#      - "PUID=${PUID}"
+#      - "TZ=${TZ}"
+#      - "SUBDOMAINS=${SUBDOMAINS}"
+#      - "TOKEN=${TOKEN}"
+#    image: "linuxserver/duckdns:latest"
+#    network_mode: "bridge"
+#    restart: "unless-stopped"
+#    volumes:
+#      - "${CONFIG_PATH}/duckdns:/config"
 
   ###### Watchtower ######
   watchtower:
