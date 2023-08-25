@@ -38,6 +38,9 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - Create the following folders from the .env file:
   - HDD_PATH_SHARED
   - CONFIG_PATH
+  - JELLYFIN_HDD
+  - JELLYFIN_CACHE
+  - JELLYFIN_METADATA
   - JELLYFIN_TRANSCODE_CACHE
   - ${HDD_PATH_SHARED}/downloads
 - Copy configurations (docker_appdata folder) from repository to CONFIG_PATH
@@ -64,8 +67,11 @@ Docker containers for Raspberry Pi based Advanced Home Server
 
 ## Configure the containers
 
-- Set Jellyfin custom transcode cache path: <https://github.com/jellyfin/jellyfin/issues/2189#issuecomment-568740643>  
-(This step is a must, if you want to save space during Jellyfin streaming with transcoding, since it is generating huge files, so I suggest to put it into the HDD)
+- Jellyfin:  
+(These steps are must, if you want to save space during Jellyfin streaming with transcoding, cache and metadata,since it is generating huge files, so I suggest to put it into the HDD, not to SD card where the default config sets)
+  - Set Jellyfin custom transcode cache path to your prevously set in the .env: Settings --> Playback --> Transcode path (dont forget to click on save after)
+  - Set Jellyfin custom cache path to your prevously set in the .env: Settings --> General --> Cache path (dont forget to click on save after)
+  - Set Jellyfin custom metadata path to your prevously set in the .env: Settings --> General --> Metadata path (dont forget to click on save after)
 
 ---
 

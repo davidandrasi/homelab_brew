@@ -262,8 +262,10 @@ services:
     restart: "unless-stopped"
     volumes:
       - "${CONFIG_PATH}/jellyfin:/config"
+      - "${JELLYFIN_CACHE}:/cache"
+      - "${JELLYFIN_METADATA}/:/metadata"
       - "${JELLYFIN_TRANSCODE_CACHE}:/transcodes"
-      - "${HDD_PATH_SHARED}:/data/shared_downloads"
+      - "${HDD_PATH_SHARED}:/shared_downloads"
 
   ###### Dokuwiki ######
   dokuwiki:
