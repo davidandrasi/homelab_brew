@@ -183,11 +183,8 @@ services:
     environment:
       - "MINIDLNA_MEDIA_DIR=/media"
       - "MINIDLNA_FRIENDLY_NAME=${MINIDLNA_FRIENDLY_NAME}"
-    hostname: "raspberrypi"
     image: "vladgh/minidlna:latest"
-    network_mode: "bridge"
-    ports:
-      - "8200:8200/tcp"
+    network_mode: "host"
     restart: "unless-stopped"
     volumes:
       - "${HDD_PATH_SHARED}:/media"
