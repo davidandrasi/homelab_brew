@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3.8"
 services:
   ###### Traefik ######
   traefik:
@@ -256,13 +256,16 @@ services:
     ports:
       - "8096:8096/tcp"
       - "8920:8920/tcp"
-    restart: "unless-stopped"
+    restart: "unless-stopped" # in case resource limits are set, you have to use "always" to make sure the container is getting automatically back to a healty state in case of reaching the pre-set resource limits
     volumes:
       - "${CONFIG_PATH}/jellyfin:/config"
       - "${JELLYFIN_CACHE}:/cache"
       - "${JELLYFIN_METADATA}/:/metadata"
       - "${JELLYFIN_TRANSCODE_CACHE}:/transcodes"
       - "${HDD_PATH_SHARED}:/shared_downloads"
+    #cpus: 0.5 # in my case from 0.1 to 4, the max value can be found here: docker info | grep -iE "CPUs|Memory"
+    #mem_limit: 1g # in my case the max is 3.7g, max value can be found here: docker info | grep -iE "CPUs|Memory"
+    #mem_reservation: 128M
 
   ###### Dokuwiki ######
   dokuwiki:
