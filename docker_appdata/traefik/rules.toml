@@ -4,6 +4,7 @@
        rule = "Host(`portainer.mydomain.subdomain.com`)" # update the hostname in the same way as in the .env file, like portainer.mydomain.subdomain.con
         entrypoints = ["websecure"]
         service = "portainer"
+        middlewares = "authelia@docker"
      [http.routers.portainer.tls]
         certResolver = "myresolver"
 

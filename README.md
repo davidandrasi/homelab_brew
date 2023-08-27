@@ -55,14 +55,16 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - Setup Duckdns: Register and login to <https://www.dynu.com/en-US/ControlPanel/DDNS> or <https://www.duckdns.org/>, and add a subdomain you wish
 - sudo chmod 600 docker_appdata/letsencrypt/acme.json
 - Update .env file based on the comments in the file
+- Update ${CONFIG_PATH}/authelia/configuration.yml based on the comments in the file
+- Update ${CONFIG_PATH}/authelia/users_database.yml based on the comments in the file
 - Update ${CONFIG_PATH}/traefik/rules.toml based on the comments in the file
 - Update ${CONFIG_PATH}/prometheus/prometheus.yml based on the comments in the file
 - Update ${CONFIG_PATH}/grafana/provisioning/datasources/datasource.yml based on the comments in the file
-- Update ${CONFIG_PATH}/docker_appdata/grafana/config.monitoring based on the comments in the file
-- Update ${CONFIG_PATH}/docker_appdata/homepage/bookmarks.yml based on the comments in the file
-- Update ${CONFIG_PATH}/docker_appdata/homepage/services.yml based on the comments in the file
-- Update ${CONFIG_PATH}/docker_appdata/homepage/settings.yml based on the comments in the file
-- Update ${CONFIG_PATH}/docker_appdata/homepage/widgets.yml based on the comments in the file
+- Update ${CONFIG_PATH}/grafana/config.monitoring based on the comments in the file
+- Update ${CONFIG_PATH}/homepage/bookmarks.yml based on the comments in the file
+- Update ${CONFIG_PATH}/homepage/services.yml based on the comments in the file
+- Update ${CONFIG_PATH}/homepage/settings.yml based on the comments in the file
+- Update ${CONFIG_PATH}/homepage/widgets.yml based on the comments in the file
 - sudo docker-compose up -d --force-recreate
 - You can reach each container with the address defined in the .env file
 
@@ -101,6 +103,7 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - <https://hub.docker.com/r/grafana/grafana>
 - <https://github.com/benphelps/homepage/>
 - <https://hub.docker.com/r/linuxserver/duplicati>
+- <https://hub.docker.com/r/authelia/authelia>
 
 ---
 
@@ -110,3 +113,5 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - <https://www.duckdns.org/>
 - <https://github.com/vegasbrianc/docker-traefik-prometheus/tree/master>
 - <https://gethomepage.dev/>
+- <https://github.com/marcogreiveldinger/videos/tree/main/authelia>
+- <https://technotim.live/posts/authelia-traefik/>

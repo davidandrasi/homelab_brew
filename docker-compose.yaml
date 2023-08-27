@@ -46,6 +46,30 @@ services:
       - "${CONFIG_PATH}/traefik/rules.toml:/etc/traefik/rules.toml"
       - "/var/run/docker.sock:/var/run/docker.sock"
 
+  ###### Authelia ######
+  authelia:
+    image: authelia/authelia
+    container_name: authelia
+    volumes:
+      - "${CONFIG_PATH}/authelia/:/config"
+    network_mode: "bridge"
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.authelia.rule=Host(`${TRAEFIK_AUTHELIA_HOST}`)'
+      - 'traefik.http.routers.authelia.entrypoints=websecure'
+      - 'traefik.http.routers.authelia.tls.certresolver=myresolver'
+      - 'traefik.http.routers.authelia.tls=true'
+      - 'traefik.http.middlewares.authelia.forwardauth.address=http://${LOCAL_IP}:9091/api/verify?rd=https://${TRAEFIK_AUTHELIA_HOST}' # TODO use domain name instead of LOCAL_IP
+      - 'traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true'
+      - 'traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'
+    ports:
+      - "9091:9091"
+    restart: unless-stopped
+    environment:
+      - "TZ=${TZ}"
+    healthcheck:
+      disable: false
+
   ###### Prometheus ######
   prometheus:
     container_name: "prometheus"
@@ -73,8 +97,7 @@ services:
       traefik.http.routers.prometheus.service: "prometheus"
       traefik.http.services.prometheus.loadbalancer.server.port: "9090"
       traefik.docker.network: "bridge"
-      traefik.http.routers.prometheus.middlewares: "auth"
-      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+      traefik.http.routers.prometheus.middlewares: authelia@docker
     restart: "unless-stopped"
 
   ###### Prometheus node-exporter ######
@@ -120,6 +143,7 @@ services:
       traefik.http.routers.grafana.service: "grafana"
       traefik.http.services.grafana.loadbalancer.server.port: "3000"
       traefik.docker.network: "bridge"
+      traefik.http.routers.grafana.middlewares: authelia@docker
     restart: unless-stopped
 
   ###### Portainer ######
@@ -142,9 +166,9 @@ services:
       traefik.enable: "true"
       traefik.http.routers.whoami.entrypoints: "websecure"
       traefik.http.routers.whoami.rule: "Host(`${TRAEFIK_WHOAMI_HOST}`)"
+      traefik.http.routers.whoami.tls: "true"
       traefik.http.routers.whoami.tls.certresolver: "myresolver"
-      traefik.http.routers.whoami.middlewares: "auth"
-      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+      traefik.http.routers.whoami.middlewares: authelia@docker
     network_mode: "bridge"
     restart: "unless-stopped"
     environment:
@@ -198,8 +222,7 @@ services:
       traefik.http.routers.wikijs.entrypoints: "websecure"
       traefik.http.routers.wikijs.rule: "Host(`${TRAEFIK_WIKIJS_HOST}`)"
       traefik.http.routers.wikijs.tls.certresolver: "myresolver"
-      traefik.http.routers.wikijs.middlewares: "auth"
-      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+      traefik.http.routers.wikijs.middlewares: authelia@docker
     network_mode: "bridge"
     ports:
       - "3100:3000/tcp"
@@ -217,8 +240,7 @@ services:
       traefik.http.routers.librespeed.entrypoints: "websecure"
       traefik.http.routers.librespeed.rule: "Host(`${TRAEFIK_LIBRESPEED_HOST}`)"
       traefik.http.routers.librespeed.tls.certresolver: "myresolver"
-      traefik.http.routers.librespeed.middlewares: "auth"
-      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+      traefik.http.routers.librespeed.middlewares: "authelia@docker"
     network_mode: "bridge"
     restart: "unless-stopped"
 
@@ -231,6 +253,7 @@ services:
       traefik.http.routers.filebrowser.entrypoints: "websecure"
       traefik.http.routers.filebrowser.rule: "Host(`${TRAEFIK_FILEBROWSER_HOST}`)"
       traefik.http.routers.filebrowser.tls.certresolver: "myresolver"
+      traefik.http.routers.filebrowser.middlewares: "authelia@docker"
     network_mode: "bridge"
     ports:
       - "8081:8081/tcp"
@@ -250,12 +273,17 @@ services:
     volumes:
       - ${CONFIG_PATH}/duplicati:/config
       - ${HDD_PATH}/_backup:/backups
-      - ${DUPLICATI_BACKUP_SOURCE}:/source
+      - /home/pi/docker_compose/:/source_docker_compose
+      - /home/pi/docker_appdata/:/source_docker_appdata
+      - /home/pi/rpi_brew/:/source_rpi_brew
+      - /home/pi/.bash_aliases:/.bash_aliases
+      - /home/pi/.gitconfig:/.gitconfig
     labels:
       traefik.enable: "true"
       traefik.http.routers.duplicati.entrypoints: "websecure"
       traefik.http.routers.duplicati.rule: "Host(`${TRAEFIK_DUPLICATI_HOST}`)"
       traefik.http.routers.duplicati.tls.certresolver: "myresolver"
+      traefik.http.routers.duplicati.middlewares: "authelia@docker"
     ports:
       - 8300:8300
     network_mode: "bridge"
@@ -274,6 +302,7 @@ services:
       traefik.http.routers.jellyfin.entrypoints: "websecure"
       traefik.http.routers.jellyfin.rule: "Host(`${TRAEFIK_JELLYFIN_HOST}`)"
       traefik.http.routers.jellyfin.tls.certresolver: "myresolver"
+      traefik.http.routers.jellyfin.middlewares: authelia@docker
     network_mode: "bridge"
     ports:
       - "8096:8096/tcp"
@@ -302,8 +331,7 @@ services:
       traefik.http.routers.dokuwiki.entrypoints: "websecure"
       traefik.http.routers.dokuwiki.rule: "Host(`${TRAEFIK_DOKUWIKI_HOST}`)"
       traefik.http.routers.dokuwiki.tls.certresolver: "myresolver"
-      traefik.http.routers.dokuwiki.middlewares: "auth"
-      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+      traefik.http.routers.dokuwiki.middlewares: authelia@docker
     network_mode: "bridge"
     restart: "unless-stopped"
     volumes:
@@ -368,6 +396,7 @@ services:
       traefik.http.routers.qbittorrent.entrypoints: "websecure"
       traefik.http.routers.qbittorrent.rule: "Host(`${TRAEFIK_QBITTORRENT_HOST}`)"
       traefik.http.routers.qbittorrent.tls.certresolver: "myresolver"
+      traefik.http.routers.qbittorrent.middlewares: authelia@docker
     network_mode: "bridge"
     ports:
       - "5555:5555/tcp"
@@ -398,8 +427,7 @@ services:
       traefik.http.routers.pihole_http.middlewares: "pihole-admin, auth"
       traefik.http.routers.pihole_http.rule: "Host(`${TRAEFIK_PIHOLE_HOST}`)"
       traefik.http.services.pihole.loadBalancer.server.port: "80"
-      traefik.http.routers.pihole.middlewares: "auth"
-      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+      traefik.http.routers.pihole.middlewares: authelia@docker
     network_mode: "bridge"
     ports:
       - "53:53/tcp"
@@ -424,8 +452,7 @@ services:
       traefik.http.routers.heimdall.entrypoints: "websecure"
       traefik.http.routers.heimdall.rule: "Host(`${TRAEFIK_HEIMDALL_HOST}`)"
       traefik.http.routers.heimdall.tls.certresolver: "myresolver"
-      traefik.http.routers.heimdall.middlewares: "auth"
-      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+      traefik.http.routers.heimdall.middlewares: authelia@docker
     network_mode: "bridge"
     restart: "unless-stopped"
     volumes:
@@ -444,8 +471,7 @@ services:
       traefik.http.routers.homepage.entrypoints: "websecure"
       traefik.http.routers.homepage.rule: "Host(`${TRAEFIK_DEFAULT_HOST}`, `${TRAEFIK_HOMEPAGE_HOST}`)"
       traefik.http.routers.homepage.tls.certresolver: "myresolver"
-      traefik.http.routers.homepage.middlewares: "auth"
-      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+      traefik.http.routers.homepage.middlewares: authelia@docker
     volumes:
       - ${CONFIG_PATH}/homepage/:/app/config
       - ${HDD_PATH}/:/mnt/hdd:ro
@@ -462,6 +488,7 @@ services:
       traefik.http.routers.yacht.entrypoints: "websecure"
       traefik.http.routers.yacht.rule: "Host(`${TRAEFIK_YACHT_HOST}`)"
       traefik.http.routers.yacht.tls.certresolver: "myresolver"
+      traefik.http.routers.yacht.middlewares: authelia@docker
     network_mode: "bridge"
     ports:
       - "8001:8000/tcp"
