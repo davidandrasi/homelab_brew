@@ -36,13 +36,16 @@ Docker containers for Raspberry Pi based Advanced Home Server
 
 - Clone the repository
 - Create the following folders from the .env file:
+  - HDD_PATH
+  - HDD_PATH/_backup
+  - HDD_PATH/_cache
   - HDD_PATH_SHARED
   - CONFIG_PATH
   - JELLYFIN_HDD
   - JELLYFIN_CACHE
   - JELLYFIN_METADATA
   - JELLYFIN_TRANSCODE_CACHE
-  - ${HDD_PATH_SHARED}/downloads
+  - HDD_PATH_SHARED/downloads
 - Copy configurations (docker_appdata folder) from repository to CONFIG_PATH
 
 ---
@@ -97,6 +100,7 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - <https://hub.docker.com/r/prom/node-exporter>
 - <https://hub.docker.com/r/grafana/grafana>
 - <https://github.com/benphelps/homepage/>
+- <https://hub.docker.com/r/linuxserver/duplicati>
 
 ---
 

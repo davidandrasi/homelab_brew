@@ -103,6 +103,13 @@
         server: my-docker
         container: filebrowser
 
+    - Duplicati:
+        href: https://duplicati.subdomain.mydomain.org
+        description: Duplicati
+        icon: duplicati.png
+        server: my-docker
+        container: duplicati
+
 - Other:
     - Router Local:
         href: http://router.local.ip # Update with your router's local address
