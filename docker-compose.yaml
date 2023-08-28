@@ -44,12 +44,12 @@ services:
       traefik.http.routers.api.service: "api@internal"
       traefik.http.routers.api.tls.certresolver: "myresolver"
       traefik.http.routers.api.middlewares: "basic-auth@docker"
-      traefik.http.middlewares.basic-auth.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+      traefik.http.middlewares.basic-auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
     network_mode: "bridge"
     ports:
-      - "443:443/tcp"
-      - "80:80/tcp"
-      - "8080:8080/tcp"
+      - "443:443"
+      - "80:80"
+      - "8080:8080"
     restart: "unless-stopped"
     environment:
       - "TZ=${TZ}"
@@ -76,7 +76,7 @@ services:
       - 'traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true'
       - 'traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'
       # Authelia is also capable of http basicauth, so it can be used for that also instead of the built-in one from traefik middlewares
-      #- 'traefik.http.middlewares.authelia-basic.forwardAuth.address=http://${TRAEFIK_AUTHELIA_HOST}/api/verify?auth=basic' # Middleware name will be authelia-basic@docker
+      #- 'traefik.http.middlewares.authelia-basic.forwardAuth.address=https://${TRAEFIK_AUTHELIA_HOST}/api/verify?auth=basic' # Middleware name will be authelia-basic@docker
       #- 'traefik.http.middlewares.authelia-basic.forwardAuth.trustForwardHeader=true'
       #- 'traefik.http.middlewares.authelia-basic.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'
     ports:
