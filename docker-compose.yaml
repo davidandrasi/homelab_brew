@@ -214,6 +214,11 @@ services:
       - "445:445/tcp"
     restart: "unless-stopped"
     volumes:
+      - "var_cache_samba:/var/cache/samba"
+      - "var_lib_samba:/var/lib/samba"
+      - "var_log_samba:/var/log/samba"
+      - "etc_samba:/etc"
+      - "run_samba:/run/samba"
       - "${HDD_PATH_SHARED}:/rpi_shared"
       - "/home/pi/rpi_brew:/rpi_brew" # TODO remove
       - "/home/pi/docker_compose:/docker_compose" # TODO remove
@@ -260,6 +265,8 @@ services:
       traefik.http.routers.librespeed.middlewares: "authelia@docker"
     network_mode: "bridge"
     restart: "unless-stopped"
+    volumes:
+      - "librespeed_data:/config"
 
   ###### Fliebrowser ######
   filebrowser:
@@ -295,6 +302,8 @@ services:
       - /home/pi/rpi_brew/:/source_rpi_brew
       - /home/pi/.bash_aliases:/.bash_aliases
       - /home/pi/.gitconfig:/.gitconfig
+      - "duplicati_source:/source"
+
     labels:
       traefik.enable: "true"
       traefik.http.routers.duplicati.entrypoints: "https"
@@ -512,12 +521,17 @@ services:
     restart: "unless-stopped"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "yacht:/config"
+      - "yacht_data:/config"
 
 volumes:
-  yacht:
-    external: true
-  portainer_data:
-    external: true
+  portainer_data: {}
+  yacht_data: {}
+  librespeed_data: {}
+  duplicati_source: {}
   prometheus_data: {}
   grafana_data: {}
+  var_cache_samba: {}
+  var_lib_samba: {}
+  var_log_samba: {}
+  etc_samba: {}
+  run_samba: {}
