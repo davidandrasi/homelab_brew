@@ -21,6 +21,7 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - Install Raspberry Pi OS based on this instruction  
 (I used the 64bit lite image for my Raspberry Pi 4 4GB version):  
 <https://www.raspberrypi.com/documentation/computers/getting-started.html#using-raspberry-pi-imager>
+- Open the following ports in your router settings towards Raspberry Pi: 22, 80, 443
 - Format the HDD to ext4 filesystem:  
 <https://www.tecmint.com/create-new-ext4-file-system-partition-in-linux/>
 - Setup the auto mount of the external HDD with fstab:  
@@ -72,6 +73,9 @@ Docker containers for Raspberry Pi based Advanced Home Server
 
 ## Configure the containers
 
+- Grafana:
+  - Set allowed cookies of Authelia session cookie:
+    - Home --> Connections --> Data sources --> Prometheus --> Allowed cookies: Add "authelia_session" --> Click Save & test
 - Jellyfin:  
 (These steps are must, if you want to save space during Jellyfin streaming with transcoding, cache and metadata,since it is generating huge files, so I suggest to put it into the HDD, not to SD card where the default config sets)
   - Set Jellyfin custom transcode cache path to your prevously set in the .env: Settings --> Playback --> Transcode path (dont forget to click on save after)

@@ -4,34 +4,47 @@ services:
   traefik:
     command:
       - "traefik"
+      - "--log.level=DEBUG"
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
       - "--providers.file=true"
       - "--providers.file.filename=/etc/traefik/rules.toml"
       - "--providers.file.watch=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
       - "--certificatesresolvers.myresolver.acme.email=${CERT_EMAIL}"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      - "--api.dashboard=true"
-      - "--log.level=DEBUG"
-      - "--api.insecure=false"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
+      - '--entryPoints.http=true'
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.http.http.redirections.entrypoint.to=https"
+      - "--entrypoints.http.http.redirections.entrypoint.scheme=https"
+      #- '--entryPoints.http.forwardedHeaders.insecure=false'
+      #- '--entryPoints.http.proxyProtocol.insecure=false'
+      - "--entrypoints.http.forwardedHeaders.trustedIPs=${AUTHELIA_TRUSTED_IPS}"
+      - "--entryPoints.http.proxyProtocol.trustedIPs=${AUTHELIA_TRUSTED_IPS}"
+      - '--entryPoints.https=true'
+      - "--entrypoints.https.address=:443"
+      #- '--entryPoints.https.forwardedHeaders.insecure=false'
+      #- '--entryPoints.https.proxyProtocol.insecure=false'
+      - "--entrypoints.https.forwardedHeaders.trustedIPs=${AUTHELIA_TRUSTED_IPS}"
+      - "--entryPoints.https.proxyProtocol.trustedIPs=${AUTHELIA_TRUSTED_IPS}"
       - "--metrics"
       - "--metrics.prometheus=true"
       - "--metrics.prometheus.entryPoint=traefik"
       - "--metrics.prometheus.buckets=${PROMETHEUS_BUCKETS}"
     container_name: "traefik"
     image: "traefik:latest"
+    depends_on:
+      - authelia
     labels:
       traefik.enable: "true"
-      traefik.http.routers.api.entrypoints: "websecure"
+      traefik.http.routers.api.entrypoints: "https"
       traefik.http.routers.api.rule: "Host(`${TRAEFIK_TRAEFIK_HOST}`)"
       traefik.http.routers.api.service: "api@internal"
       traefik.http.routers.api.tls.certresolver: "myresolver"
-      traefik.http.routers.api.middlewares: "auth"
-      traefik.http.middlewares.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
+      traefik.http.routers.api.middlewares: "basic-auth@docker"
+      traefik.http.middlewares.basic-auth.auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
     network_mode: "bridge"
     ports:
       - "443:443/tcp"
@@ -56,19 +69,23 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.authelia.rule=Host(`${TRAEFIK_AUTHELIA_HOST}`)'
-      - 'traefik.http.routers.authelia.entrypoints=websecure'
+      - 'traefik.http.routers.authelia.entrypoints=https'
       - 'traefik.http.routers.authelia.tls.certresolver=myresolver'
       - 'traefik.http.routers.authelia.tls=true'
-      - 'traefik.http.middlewares.authelia.forwardauth.address=http://${LOCAL_IP}:9091/api/verify?rd=https://${TRAEFIK_AUTHELIA_HOST}' # TODO use domain name instead of LOCAL_IP
+      - 'traefik.http.middlewares.authelia.forwardauth.address=https://${TRAEFIK_AUTHELIA_HOST}/api/verify?rd=https://${TRAEFIK_AUTHELIA_HOST}'
       - 'traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true'
       - 'traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'
+      # Authelia is also capable of http basicauth, so it can be used for that also instead of the built-in one from traefik middlewares
+      #- 'traefik.http.middlewares.authelia-basic.forwardAuth.address=http://${TRAEFIK_AUTHELIA_HOST}/api/verify?auth=basic' # Middleware name will be authelia-basic@docker
+      #- 'traefik.http.middlewares.authelia-basic.forwardAuth.trustForwardHeader=true'
+      #- 'traefik.http.middlewares.authelia-basic.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email'
     ports:
       - "9091:9091"
     restart: unless-stopped
     environment:
       - "TZ=${TZ}"
     healthcheck:
-      disable: false
+      disable: true # when false, the container takes 10-20s to come up
 
   ###### Prometheus ######
   prometheus:
@@ -91,7 +108,7 @@ services:
     network_mode: "bridge"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.prometheus.entrypoints: "websecure"
+      traefik.http.routers.prometheus.entrypoints: "https"
       traefik.http.routers.prometheus.rule: "Host(`${TRAEFIK_PROMETHEUS_HOST}`)"
       traefik.http.routers.prometheus.tls.certresolver: "myresolver"
       traefik.http.routers.prometheus.service: "prometheus"
@@ -137,7 +154,7 @@ services:
     user: "472" # this means, that the username is admin
     labels:
       traefik.enable: "true"
-      traefik.http.routers.grafana.entrypoints: "websecure"
+      traefik.http.routers.grafana.entrypoints: "https"
       traefik.http.routers.grafana.rule: "Host(`${TRAEFIK_GRAFANA_HOST}`)"
       traefik.http.routers.grafana.tls.certresolver: "myresolver"
       traefik.http.routers.grafana.service: "grafana"
@@ -164,7 +181,7 @@ services:
     image: "traefik/whoami:latest"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.whoami.entrypoints: "websecure"
+      traefik.http.routers.whoami.entrypoints: "https"
       traefik.http.routers.whoami.rule: "Host(`${TRAEFIK_WHOAMI_HOST}`)"
       traefik.http.routers.whoami.tls: "true"
       traefik.http.routers.whoami.tls.certresolver: "myresolver"
@@ -219,7 +236,7 @@ services:
     image: "linuxserver/wikijs:latest"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.wikijs.entrypoints: "websecure"
+      traefik.http.routers.wikijs.entrypoints: "https"
       traefik.http.routers.wikijs.rule: "Host(`${TRAEFIK_WIKIJS_HOST}`)"
       traefik.http.routers.wikijs.tls.certresolver: "myresolver"
       traefik.http.routers.wikijs.middlewares: authelia@docker
@@ -237,7 +254,7 @@ services:
     image: "linuxserver/librespeed:latest"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.librespeed.entrypoints: "websecure"
+      traefik.http.routers.librespeed.entrypoints: "https"
       traefik.http.routers.librespeed.rule: "Host(`${TRAEFIK_LIBRESPEED_HOST}`)"
       traefik.http.routers.librespeed.tls.certresolver: "myresolver"
       traefik.http.routers.librespeed.middlewares: "authelia@docker"
@@ -250,7 +267,7 @@ services:
     image: "hurlenko/filebrowser:latest"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.filebrowser.entrypoints: "websecure"
+      traefik.http.routers.filebrowser.entrypoints: "https"
       traefik.http.routers.filebrowser.rule: "Host(`${TRAEFIK_FILEBROWSER_HOST}`)"
       traefik.http.routers.filebrowser.tls.certresolver: "myresolver"
       traefik.http.routers.filebrowser.middlewares: "authelia@docker"
@@ -280,7 +297,7 @@ services:
       - /home/pi/.gitconfig:/.gitconfig
     labels:
       traefik.enable: "true"
-      traefik.http.routers.duplicati.entrypoints: "websecure"
+      traefik.http.routers.duplicati.entrypoints: "https"
       traefik.http.routers.duplicati.rule: "Host(`${TRAEFIK_DUPLICATI_HOST}`)"
       traefik.http.routers.duplicati.tls.certresolver: "myresolver"
       traefik.http.routers.duplicati.middlewares: "authelia@docker"
@@ -299,7 +316,7 @@ services:
     image: "linuxserver/jellyfin:latest"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.jellyfin.entrypoints: "websecure"
+      traefik.http.routers.jellyfin.entrypoints: "https"
       traefik.http.routers.jellyfin.rule: "Host(`${TRAEFIK_JELLYFIN_HOST}`)"
       traefik.http.routers.jellyfin.tls.certresolver: "myresolver"
       traefik.http.routers.jellyfin.middlewares: authelia@docker
@@ -328,7 +345,7 @@ services:
     image: "ghcr.io/linuxserver/dokuwiki:latest"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.dokuwiki.entrypoints: "websecure"
+      traefik.http.routers.dokuwiki.entrypoints: "https"
       traefik.http.routers.dokuwiki.rule: "Host(`${TRAEFIK_DOKUWIKI_HOST}`)"
       traefik.http.routers.dokuwiki.tls.certresolver: "myresolver"
       traefik.http.routers.dokuwiki.middlewares: authelia@docker
@@ -393,7 +410,7 @@ services:
     image: "linuxserver/qbittorrent:latest"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.qbittorrent.entrypoints: "websecure"
+      traefik.http.routers.qbittorrent.entrypoints: "https"
       traefik.http.routers.qbittorrent.rule: "Host(`${TRAEFIK_QBITTORRENT_HOST}`)"
       traefik.http.routers.qbittorrent.tls.certresolver: "myresolver"
       traefik.http.routers.qbittorrent.middlewares: authelia@docker
@@ -423,8 +440,8 @@ services:
       traefik.http.routers.pihole.service: "pihole"
       traefik.http.routers.pihole.tls: "true"
       traefik.http.routers.pihole.tls.certresolver: "myresolver"
-      traefik.http.routers.pihole_http.entrypoints: "web"
-      traefik.http.routers.pihole_http.middlewares: "pihole-admin, auth"
+      traefik.http.routers.pihole_http.entrypoints: "http"
+      traefik.http.routers.pihole_http.middlewares: "authelia@docker, pihole-admin"
       traefik.http.routers.pihole_http.rule: "Host(`${TRAEFIK_PIHOLE_HOST}`)"
       traefik.http.services.pihole.loadBalancer.server.port: "80"
       traefik.http.routers.pihole.middlewares: authelia@docker
@@ -449,7 +466,7 @@ services:
     image: "lscr.io/linuxserver/heimdall:latest"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.heimdall.entrypoints: "websecure"
+      traefik.http.routers.heimdall.entrypoints: "https"
       traefik.http.routers.heimdall.rule: "Host(`${TRAEFIK_HEIMDALL_HOST}`)"
       traefik.http.routers.heimdall.tls.certresolver: "myresolver"
       traefik.http.routers.heimdall.middlewares: authelia@docker
@@ -468,7 +485,7 @@ services:
       - "TZ=${TZ}"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.homepage.entrypoints: "websecure"
+      traefik.http.routers.homepage.entrypoints: "https"
       traefik.http.routers.homepage.rule: "Host(`${TRAEFIK_DEFAULT_HOST}`, `${TRAEFIK_HOMEPAGE_HOST}`)"
       traefik.http.routers.homepage.tls.certresolver: "myresolver"
       traefik.http.routers.homepage.middlewares: authelia@docker
@@ -485,7 +502,7 @@ services:
     image: "selfhostedpro/yacht:latest"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.yacht.entrypoints: "websecure"
+      traefik.http.routers.yacht.entrypoints: "https"
       traefik.http.routers.yacht.rule: "Host(`${TRAEFIK_YACHT_HOST}`)"
       traefik.http.routers.yacht.tls.certresolver: "myresolver"
       traefik.http.routers.yacht.middlewares: authelia@docker
