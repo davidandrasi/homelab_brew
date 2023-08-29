@@ -2,6 +2,7 @@ version: "3.8"
 services:
   ###### Traefik ######
   traefik:
+    profiles: ["all", "dev"]
     command:
       - "traefik"
       - "--log.level=DEBUG"
@@ -61,6 +62,7 @@ services:
 
   ###### Authelia ######
   authelia:
+    profiles: ["all", "dev"]
     image: authelia/authelia
     container_name: authelia
     volumes:
@@ -89,6 +91,7 @@ services:
 
   ###### Prometheus ######
   prometheus:
+    profiles: ["all", "dev"]
     container_name: "prometheus"
     image: prom/prometheus
     environment:
@@ -121,6 +124,7 @@ services:
 
   ###### Prometheus node-exporter ######
   prometheus-node-exporter:
+    profiles: ["all", "dev"]
     image: prom/node-exporter:latest
     container_name: prometheus-node-exporter
     restart: unless-stopped
@@ -141,6 +145,7 @@ services:
 
   ###### Grafana ######
   grafana:
+    profiles: ["all", "dev"]
     image: grafana/grafana
     container_name: grafana
     depends_on:
@@ -167,6 +172,7 @@ services:
 
   ###### Portainer ######
   portainer:
+    profiles: ["all", "dev"]
     container_name: "portainer"
     image: "portainer/portainer-ce"
     network_mode: "bridge"
@@ -179,6 +185,7 @@ services:
 
   ###### Whoami ######
   whoami:
+    profiles: ["all", "dev"]
     container_name: "whoami"
     image: "traefik/whoami:latest"
     labels:
@@ -195,6 +202,7 @@ services:
 
   ###### Samba ######
   samba:
+    profiles: ["all", "dev"]
     command:
       - "-n"
       - "-u"
@@ -227,6 +235,7 @@ services:
 
   ###### Minidlna ######
   minidlna:
+    profiles: ["all", "dev"]
     container_name: "minidlna"
     environment:
       - "MINIDLNA_MEDIA_DIR=/media"
@@ -239,6 +248,7 @@ services:
 
   ###### Wikijs ######
   wikijs:
+    profiles: ["all", "other"]
     container_name: "wikijs"
     image: "linuxserver/wikijs:latest"
     labels:
@@ -257,6 +267,7 @@ services:
 
   ###### Librespeed ######
   librespeed:
+    profiles: ["all", "other"]
     container_name: "librespeed"
     image: "linuxserver/librespeed:latest"
     labels:
@@ -272,6 +283,7 @@ services:
 
   ###### Fliebrowser ######
   filebrowser:
+    profiles: ["all", "dev"]
     container_name: "filebrowser"
     image: "hurlenko/filebrowser:latest"
     labels:
@@ -290,6 +302,7 @@ services:
 
   ###### Duplicati ######
   duplicati:
+    profiles: ["all", "dev"]
     image: lscr.io/linuxserver/duplicati:latest
     container_name: duplicati
     environment:
@@ -305,7 +318,6 @@ services:
       - /home/pi/.bash_aliases:/.bash_aliases
       - /home/pi/.gitconfig:/.gitconfig
       - "duplicati_source:/source"
-
     labels:
       traefik.enable: "true"
       traefik.http.routers.duplicati.entrypoints: "https"
@@ -319,6 +331,7 @@ services:
 
   ###### Jellyfin ######
   jellyfin:
+    profiles: ["all", "dev"]
     container_name: "jellyfin"
     environment:
       - "PGID=${PGID}"
@@ -367,6 +380,7 @@ services:
 
   ###### Dynu Updater ######
   dynu-updater:
+    profiles: ["all", "dev"]
     container_name: "dynu-updater"
     environment:
       - "TZ=${TZ}"
@@ -382,6 +396,7 @@ services:
 
 #  ###### Duckdns ######
 #  duckdns:
+#  profiles: ["all", "dev"]
 #    container_name: "duckdns"
 #    environment:
 #      - "PGID=${PGID}"
@@ -397,6 +412,7 @@ services:
 
   ###### Watchtower ######
   watchtower:
+    profiles: ["all", "dev"]
     container_name: "watchtower"
     environment:
       - "WATCHTOWER_CLEANUP=${WATCHTOWER_CLEANUP}"
@@ -411,6 +427,7 @@ services:
 
   ###### Qbittorrent ######
   qbittorrent:
+    profiles: ["all", "dev"]
     container_name: "qbittorrent"
     environment:
       - "PGID=${PGID}"
@@ -437,6 +454,7 @@ services:
 
   ###### Pihole ######
   pihole:
+    profiles: ["all", "dev"]
     container_name: "pihole"
     environment:
       - "TZ=${TZ}"
@@ -469,6 +487,7 @@ services:
 
   ###### Heimdall ######
   heimdall:
+    profiles: ["all", "other"]
     container_name: "heimdall"
     environment:
       - "TZ=${TZ}"
@@ -488,6 +507,7 @@ services:
 
   ###### Homepage ######
   homepage:
+    profiles: ["all", "dev"]
     image: ghcr.io/benphelps/homepage:latest
     container_name: homepage
     ports:
