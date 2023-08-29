@@ -2,7 +2,7 @@ apiVersion: 1
 
 deleteDatasources:
   - name: Prometheus
-#  - name: Prometheus-1
+#  - name: Prometheus-local
 
 datasources:
 - name: Prometheus
@@ -22,6 +22,7 @@ datasources:
      graphiteVersion: "1.1"
      tlsAuth: false
      tlsAuthWithCACert: false
+     keepCookies: ["authelia_session"]
   secureJsonData:
     tlsCACert: "..."
     tlsClientCert: "..."
@@ -29,7 +30,7 @@ datasources:
   version: 1
   editable: true
 # Sample for adding second prometheus data source
-#- name: Prometheus-1
+#- name: Prometheus-local
 #  type: prometheus
 #  access: browser
 #  # Add your prometheus IP and port here
