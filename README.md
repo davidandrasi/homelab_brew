@@ -30,6 +30,8 @@ Docker containers for Raspberry Pi based Advanced Home Server
 <https://www.simplilearn.com/tutorials/docker-tutorial/raspberry-pi-docker>
 - Install docker-compose:  
 <https://dev.to/elalemanyo/how-to-install-docker-and-docker-compose-on-raspberry-pi-1mo>
+- You might increase the default swap size from 100MB to 1GB:  
+<https://nebl.io/neblio-university/enabling-increasing-raspberry-pi-swap>
 
 ---
 
