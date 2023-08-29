@@ -51,6 +51,8 @@ session:
   expiration: 3600  # 1 hour
   inactivity: 300  # 5 minutes
   domain: example.com  # UPDATE: Should match whatever your root protected domain is
+  same_site: lax
+  remember_me_duration:  1M
 
   # redis:
   #   host: redis
