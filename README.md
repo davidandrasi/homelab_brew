@@ -30,6 +30,20 @@ Docker containers for Raspberry Pi based Advanced Home Server
 <https://www.simplilearn.com/tutorials/docker-tutorial/raspberry-pi-docker>
 - Install docker-compose:  
 <https://dev.to/elalemanyo/how-to-install-docker-and-docker-compose-on-raspberry-pi-1mo>
+- Disable userland-proxy:  
+  1. Create/edit ```/etc/docker/daemon.json```
+  2. Add this:  
+
+      ```yaml
+      {
+        "userland-proxy": false,
+        "iptables": true
+      }
+      ```
+
+  3. Restart docker: ```sudo systemctl restart docker```
+  4. If not done automatically, it may also be necessary to run:  
+  ```/sbin/sysctl net.ipv4.conf.docker0.route_localnet=1```
 - You might increase the default swap size from 100MB to 1GB:  
 <https://nebl.io/neblio-university/enabling-increasing-raspberry-pi-swap>
 
@@ -38,37 +52,37 @@ Docker containers for Raspberry Pi based Advanced Home Server
 ## Preparation
 
 - Clone the repository
-- Create the following folders from the .env file:
-  - HDD_PATH
-  - HDD_PATH/_backup
-  - HDD_PATH/_cache
-  - HDD_PATH_SHARED
-  - CONFIG_PATH
-  - JELLYFIN_HDD
-  - JELLYFIN_CACHE
-  - JELLYFIN_METADATA
-  - JELLYFIN_TRANSCODE_CACHE
-  - HDD_PATH_SHARED/downloads
-- Copy configurations (docker_appdata folder) from repository to CONFIG_PATH
+- Create the following folders from the ```.env``` file:
+  - ```HDD_PATH```
+  - ```HDD_PATH/_backup```
+  - ```HDD_PATH/_cache```
+  - ```HDD_PATH_SHARED```
+  - ```CONFIG_PATH```
+  - ```JELLYFIN_HDD```
+  - ```JELLYFIN_CACHE```
+  - ```JELLYFIN_METADATA```
+  - ```JELLYFIN_TRANSCODE_CACHE```
+  - ```HDD_PATH_SHARED/downloads```
+- Copy configurations (docker_appdata folder) from repository to ```CONFIG_PATH```
 
 ---
 
 ## Configure the environment
 
-- Setup Duckdns: Register and login to <https://www.dynu.com/en-US/ControlPanel/DDNS> or <https://www.duckdns.org/>, and add a subdomain you wish
-- sudo chmod 600 docker_appdata/letsencrypt/acme.json
-- Update .env file based on the comments in the file
-- Update ${CONFIG_PATH}/authelia/configuration.yml based on the comments in the file
-- Update ${CONFIG_PATH}/authelia/users_database.yml based on the comments in the file
-- Update ${CONFIG_PATH}/traefik/rules.toml based on the comments in the file
-- Update ${CONFIG_PATH}/prometheus/prometheus.yml based on the comments in the file
-- Update ${CONFIG_PATH}/grafana/provisioning/datasources/datasource.yml based on the comments in the file
-- Update ${CONFIG_PATH}/grafana/config.monitoring based on the comments in the file
-- Update ${CONFIG_PATH}/homepage/bookmarks.yml based on the comments in the file
-- Update ${CONFIG_PATH}/homepage/services.yml based on the comments in the file
-- Update ${CONFIG_PATH}/homepage/settings.yml based on the comments in the file
-- Update ${CONFIG_PATH}/homepage/widgets.yml based on the comments in the file
-- sudo docker-compose up -d --force-recreate
+- Setup Dynamic DNS: Register and login to <https://www.dynu.com/en-US/ControlPanel/DDNS> or <https://www.duckdns.org/>, and add a subdomain you wish
+- ```sudo chmod 600 docker_appdata/letsencrypt/acme.json```
+- Update ```.env``` file based on the comments in the file
+- Update ```${CONFIG_PATH}/authelia/configuration.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/authelia/users_database.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/traefik/rules.toml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/prometheus/prometheus.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/grafana/provisioning/datasources/datasource.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/grafana/config.monitoring``` based on the comments in the file
+- Update ```${CONFIG_PATH}/homepage/bookmarks.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/homepage/services.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/homepage/settings.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/homepage/widgets.yml``` based on the comments in the file
+- ```sudo docker-compose up -d```
 - You can reach each container with the address defined in the .env file
 
 ---
@@ -77,12 +91,12 @@ Docker containers for Raspberry Pi based Advanced Home Server
 
 - Grafana:
   - Set allowed cookies of Authelia session cookie:
-    - Home --> Connections --> Data sources --> Prometheus --> Allowed cookies: Add "authelia_session" --> Click Save & test
+    - ```Home --> Connections --> Data sources --> Prometheus --> Allowed cookies: Add "authelia_session" --> Click Save & test```
 - Jellyfin:  
 (These steps are must, if you want to save space during Jellyfin streaming with transcoding, cache and metadata,since it is generating huge files, so I suggest to put it into the HDD, not to SD card where the default config sets)
-  - Set Jellyfin custom transcode cache path to your prevously set in the .env: Settings --> Playback --> Transcode path (dont forget to click on save after)
-  - Set Jellyfin custom cache path to your prevously set in the .env: Settings --> General --> Cache path (dont forget to click on save after)
-  - Set Jellyfin custom metadata path to your prevously set in the .env: Settings --> General --> Metadata path (dont forget to click on save after)
+  - Set Jellyfin custom transcode cache path to your prevously set in the ```.env```: ```Settings --> Playback --> Transcode path``` (dont forget to click on save after)
+  - Set Jellyfin custom cache path to your prevously set in the ```.env```: ```Settings --> General --> Cache path``` (dont forget to click on save after)
+  - Set Jellyfin custom metadata path to your prevously set in the ```.env```: ```Settings --> General --> Metadata path``` (dont forget to click on save after)
 
 ---
 
