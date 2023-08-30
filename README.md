@@ -83,7 +83,7 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - Update ```${CONFIG_PATH}/homepage/settings.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/homepage/widgets.yml``` based on the comments in the file
 - ```sudo docker-compose up -d```
-- You can reach each container with the address defined in the .env file
+- You can reach each container with the address defined in the ```.env``` file
 
 ---
 
