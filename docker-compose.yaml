@@ -172,16 +172,18 @@ services:
 
   ###### Portainer ######
   portainer:
-    profiles: ["all", "dev"]
-    container_name: "portainer"
-    image: "portainer/portainer-ce"
-    network_mode: "bridge"
+    container_name: portainer
+    image: portainer/portainer-ce
+    network_mode: bridge
     ports:
-      - "9000:9000/tcp"
-    restart: "unless-stopped"
+      - 9000:9000/tcp
+    profiles: ["all", "dev"]
+    restart: unless-stopped
+    environment:
+      - "TZ=${TZ}"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "portainer_data:/data"
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
 
   ###### Whoami ######
   whoami:
@@ -223,6 +225,8 @@ services:
       - "139:139/tcp"
       - "445:445/tcp"
     restart: "unless-stopped"
+    environment:
+      - "TZ=${TZ}"
     volumes:
       - "var_cache_samba:/var/cache/samba"
       - "var_lib_samba:/var/lib/samba"
@@ -240,6 +244,7 @@ services:
     environment:
       - "MINIDLNA_MEDIA_DIR=/media"
       - "MINIDLNA_FRIENDLY_NAME=${MINIDLNA_FRIENDLY_NAME}"
+      - "TZ=${TZ}"
     image: "vladgh/minidlna:latest"
     network_mode: "host"
     restart: "unless-stopped"
@@ -261,6 +266,8 @@ services:
     ports:
       - "3100:3000/tcp"
     restart: "unless-stopped"
+    environment:
+      - "TZ=${TZ}"
     volumes:
       - "${CONFIG_PATH}/wikijs/data:/data"
       - "${CONFIG_PATH}/wikijs:/config"
@@ -278,6 +285,8 @@ services:
       traefik.http.routers.librespeed.middlewares: "authelia@docker"
     network_mode: "bridge"
     restart: "unless-stopped"
+    environment:
+      - "TZ=${TZ}"
     volumes:
       - "librespeed_data:/config"
 
@@ -295,6 +304,8 @@ services:
     network_mode: "bridge"
     ports:
       - "8081:8081/tcp"
+    environment:
+      - "TZ=${TZ}"
     restart: "unless-stopped"
     volumes:
       - "${CONFIG_PATH}/filebrowser:/config"
@@ -418,6 +429,7 @@ services:
     environment:
       - "WATCHTOWER_CLEANUP=${WATCHTOWER_CLEANUP}"
       - "WATCHTOWER_POLL_INTERVAL=${WATCHTOWER_POLL_INTERVAL}"
+      - "TZ=${TZ}"
     image: "containrrr/watchtower:latest"
     network_mode: "bridge"
     restart: "unless-stopped"
@@ -543,6 +555,8 @@ services:
     ports:
       - "8001:8000/tcp"
     restart: "unless-stopped"
+    environment:
+      - "TZ=${TZ}"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "yacht_data:/config"
