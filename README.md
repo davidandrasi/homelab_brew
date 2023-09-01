@@ -30,6 +30,7 @@ Docker containers for Raspberry Pi based Advanced Home Server
 <https://www.simplilearn.com/tutorials/docker-tutorial/raspberry-pi-docker>
 - Install docker-compose:  
 <https://dev.to/elalemanyo/how-to-install-docker-and-docker-compose-on-raspberry-pi-1mo>
+- Configure your router to have the same internal IP for your Raspberry Pi everytime (Manual IP of device to DHCP list in router)
 - Disable userland-proxy:  
   1. Create/edit ```/etc/docker/daemon.json```
   2. Add this:  
