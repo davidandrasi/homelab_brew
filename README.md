@@ -44,6 +44,19 @@ Docker containers for Raspberry Pi based Advanced Home Server
   3. Restart docker: ```sudo systemctl restart docker```
   4. If not done automatically, it may also be necessary to run:  
   ```/sbin/sysctl net.ipv4.conf.docker0.route_localnet=1```
+- Make sure to have DNS servers are permanently present in ```/etc/resolv.conf```:
+  - ```sudo apt install resolvconf```
+  - Open ```/etc/resolvconf/resolv.conf.d/base``` and add the following lines:  
+
+    ```config
+    nameserver 8.8.8.8
+    nameserver 8.8.4.4
+    ```
+
+  - ```sudo resolvconf -u```
+  - ```systemctl status systemd-resolved.service```
+  - ```systemctl enable systemd-resolved.service```
+  - Try ```resolvectl status```
 - You might increase the default swap size from 100MB to 1GB:  
 <https://nebl.io/neblio-university/enabling-increasing-raspberry-pi-swap>
 
