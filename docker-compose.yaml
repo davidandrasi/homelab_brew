@@ -492,7 +492,7 @@ services:
       - "53:53/tcp"
       - "53:53/udp"
       - "67:67/udp"
-      - "88:80/tcp"
+      - "853:853/tcp"
     restart: "unless-stopped"
     volumes:
       - "${CONFIG_PATH}/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"

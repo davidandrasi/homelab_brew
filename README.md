@@ -57,6 +57,11 @@ Docker containers for Raspberry Pi based Advanced Home Server
   - ```systemctl status systemd-resolved.service```
   - ```systemctl enable systemd-resolved.service```
   - Try ```resolvectl status```
+- Free up port 53 for Pi-hole:
+  - ```sudo systemctl stop systemd-resolved```
+  - Edit ```/etc/systemd/resolved.conf```
+    - ```DNSStubListener=no```
+  - ```sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf```
 - You might increase the default swap size from 100MB to 1GB:  
 <https://nebl.io/neblio-university/enabling-increasing-raspberry-pi-swap>
 
@@ -110,6 +115,8 @@ Docker containers for Raspberry Pi based Advanced Home Server
   - Set Jellyfin custom transcode cache path to your prevously set in the ```.env```: ```Settings --> Playback --> Transcode path``` (dont forget to click on save after)
   - Set Jellyfin custom cache path to your prevously set in the ```.env```: ```Settings --> General --> Cache path``` (dont forget to click on save after)
   - Set Jellyfin custom metadata path to your prevously set in the ```.env```: ```Settings --> General --> Metadata path``` (dont forget to click on save after)
+  - Add your Rasbpberry Pi's IP address as a primary DNS server to your router configuration to make sure that every of your device conntcted to the router will be ad-free
+    - Optional: update Pi-hole ad-list with additional database URLs
 
 ---
 
