@@ -63,6 +63,37 @@
 #            username: username # Update with your corresponding username
 #            password: password # Update with your corresponding password
 
+    - Uptime-kuma:
+        href: https://uptimekuma.subdomain.mydomain.org # Update with your domain address configured in .env file next to the do>
+        description: Uptime kuma
+        icon: uptime-kuma.png
+        server: my-docker
+        container: uptime-kuma
+
+    - Minidlna:
+        href: https://minidlna.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docke>
+        description: Minidlna
+        icon: dlna.png
+        server: my-docker
+        container: minidlna
+
+    - Whoami:
+        href: https://whoami.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker->
+        description: Whoami
+        icon: webtools.png
+        server: my-docker
+        container: whoami
+
+    - Router Local:
+        href: http://router.local.ip # Update with your router's local address
+        description: Router Local
+        icon: asus-router.png
+
+    - Router Remote:
+        href: https://router.external.ip # Update with your router's remote address
+        description: Router Remote
+        icon: asus-router.png
+
     - Yacht:
         href: https://yacht.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
         description: Yacht
@@ -70,7 +101,7 @@
         server: my-docker
         container: yacht
 
-- Media & Files:
+- Media and Files:
     - qBittorrent:
         href: https://qbittorrent.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
         description: qBittorrent
@@ -111,22 +142,19 @@
         container: duplicati
 
 - Other:
-    - Router Local:
-        href: http://router.local.ip # Update with your router's local address
-        description: Router Local
-        icon: asus-router.png
+#    - Yacht:
+#        href: https://yacht.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-c>
+#        description: Yacht
+#        icon: yacht.png
+#        server: my-docker
+#        container: yacht
 
-    - Router Remote:
-        href: https://router.external.ip # Update with your router's remote address
-        description: Router Remote
-        icon: asus-router.png
-
-    - Heimdall:
-        href: https://heimdall.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
-        description: Heimdall
-        icon: heimdall.png
-        server: my-docker
-        container: heimdall
+#    - Heimdall:
+#        href: https://heimdall.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
+#        description: Heimdall
+#        icon: heimdall.png
+#        server: my-docker
+#        container: heimdall
 
     - Wikijs:
         href: https://wikijs.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
@@ -148,17 +176,3 @@
         icon: librespeed.png
         server: my-docker
         container: librespeed
-
-    - Minidlna:
-        href: https://minidlna.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
-        description: Minidlna
-        icon: dlna.png
-        server: my-docker
-        container: minidlna
-
-    - Whoami:
-        href: https://whoami.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
-        description: Whoami
-        icon: webtools.png
-        server: my-docker
-        container: whoami

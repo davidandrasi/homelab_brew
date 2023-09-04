@@ -234,8 +234,8 @@ services:
       - "etc_samba:/etc"
       - "run_samba:/run/samba"
       - "${HDD_PATH_SHARED}:/rpi_shared"
-      - "/home/pi/rpi_brew:/rpi_brew" # TODO remove
-      - "/home/pi/docker_compose:/docker_compose" # TODO remove
+      - "${MYHOME}/rpi_brew:/rpi_brew" # TODO remove
+      - "${MYHOME}/docker_compose:/docker_compose" # TODO remove
 
   ###### Minidlna ######
   minidlna:
@@ -323,11 +323,11 @@ services:
     volumes:
       - ${CONFIG_PATH}/duplicati:/config
       - ${HDD_PATH}/_backup:/backups
-      - /home/pi/docker_compose/:/source_docker_compose
-      - /home/pi/docker_appdata/:/source_docker_appdata
-      - /home/pi/rpi_brew/:/source_rpi_brew
-      - /home/pi/.bash_aliases:/.bash_aliases
-      - /home/pi/.gitconfig:/.gitconfig
+      - ${MYHOME}/docker_compose/:/source_docker_compose
+      - ${MYHOME}/docker_appdata/:/source_docker_appdata
+      - ${MYHOME}/rpi_brew/:/source_rpi_brew
+      - ${MYHOME}/.bash_aliases:/.bash_aliases
+      - ${MYHOME}/.gitconfig:/.gitconfig
       - "duplicati_source:/source"
     labels:
       traefik.enable: "true"
@@ -498,25 +498,25 @@ services:
       - "${CONFIG_PATH}/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
       - "${CONFIG_PATH}/pihole/etc-pihole:/etc/pihole"
 
-  ###### Heimdall ######
-  heimdall:
-    profiles: ["all", "other"]
-    container_name: "heimdall"
-    environment:
-      - "TZ=${TZ}"
-      - "PGID=${PGID}"
-      - "PUID=${PUID}"
-    image: "lscr.io/linuxserver/heimdall:latest"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.heimdall.entrypoints: "https"
-      traefik.http.routers.heimdall.rule: "Host(`${TRAEFIK_HEIMDALL_HOST}`)"
-      traefik.http.routers.heimdall.tls.certresolver: "myresolver"
-      traefik.http.routers.heimdall.middlewares: authelia@docker
-    network_mode: "bridge"
-    restart: "unless-stopped"
-    volumes:
-      - "${CONFIG_PATH}/heimdall:/config"
+  # ###### Heimdall ######
+  # heimdall:
+  #   profiles: ["all", "other"]
+  #   container_name: "heimdall"
+  #   environment:
+  #     - "TZ=${TZ}"
+  #     - "PGID=${PGID}"
+  #     - "PUID=${PUID}"
+  #   image: "lscr.io/linuxserver/heimdall:latest"
+  #   labels:
+  #     traefik.enable: "true"
+  #     traefik.http.routers.heimdall.entrypoints: "https"
+  #     traefik.http.routers.heimdall.rule: "Host(`${TRAEFIK_HEIMDALL_HOST}`)"
+  #     traefik.http.routers.heimdall.tls.certresolver: "myresolver"
+  #     traefik.http.routers.heimdall.middlewares: authelia@docker
+  #   network_mode: "bridge"
+  #   restart: "unless-stopped"
+  #   volumes:
+  #     - "${CONFIG_PATH}/heimdall:/config"
 
   ###### Homepage ######
   homepage:
@@ -524,7 +524,7 @@ services:
     image: ghcr.io/benphelps/homepage:latest
     container_name: homepage
     ports:
-      - 3001:3000
+      - 3002:3000
     environment:
       - "TZ=${TZ}"
     labels:
@@ -540,26 +540,46 @@ services:
     restart: unless-stopped
     network_mode: "bridge"
 
-  ###### Yacht ######
-  yacht:
-    profiles: ["all", "other"]
-    container_name: "yacht"
-    image: "selfhostedpro/yacht:latest"
+  ###### Uptime kuma ######
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    volumes:
+      - ${HDD_PATH}/_cache/uptime-kuma/data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 3001:3001
     labels:
       traefik.enable: "true"
-      traefik.http.routers.yacht.entrypoints: "https"
-      traefik.http.routers.yacht.rule: "Host(`${TRAEFIK_YACHT_HOST}`)"
-      traefik.http.routers.yacht.tls.certresolver: "myresolver"
-      traefik.http.routers.yacht.middlewares: authelia@docker
+      traefik.http.routers.uptime-kuma.entrypoints: "https"
+      traefik.http.routers.uptime-kuma.rule: "Host(`${TRAEFIK_UPTIMEKUMA_HOST}`)"
+      traefik.http.routers.uptime-kuma.tls.certresolver: "myresolver"
+      traefik.http.routers.uptime-kuma.middlewares: authelia@docker
+    restart: unless-stopped
     network_mode: "bridge"
-    ports:
-      - "8001:8000/tcp"
-    restart: "unless-stopped"
-    environment:
-      - "TZ=${TZ}"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "yacht_data:/config"
+    security_opt:
+      - no-new-privileges:true
+
+  # ###### Yacht ######
+  # yacht:
+  #   profiles: ["all", "other"]
+  #   container_name: "yacht"
+  #   image: "selfhostedpro/yacht:latest"
+  #   labels:
+  #     traefik.enable: "true"
+  #     traefik.http.routers.yacht.entrypoints: "https"
+  #     traefik.http.routers.yacht.rule: "Host(`${TRAEFIK_YACHT_HOST}`)"
+  #     traefik.http.routers.yacht.tls.certresolver: "myresolver"
+  #     traefik.http.routers.yacht.middlewares: authelia@docker
+  #   network_mode: "bridge"
+  #   ports:
+  #     - "8001:8000/tcp"
+  #   restart: "unless-stopped"
+  #   environment:
+  #     - "TZ=${TZ}"
+  #   volumes:
+  #     - "/var/run/docker.sock:/var/run/docker.sock"
+  #     - "yacht_data:/config"
 
 volumes:
   portainer_data: {}

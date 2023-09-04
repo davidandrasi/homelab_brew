@@ -75,6 +75,7 @@ Docker containers for Raspberry Pi based Advanced Home Server
   - ```HDD_PATH```
   - ```HDD_PATH/_backup```
   - ```HDD_PATH/_cache```
+  - ```HDD_PATH/_cache/uptime-kuma/data```
   - ```HDD_PATH_SHARED```
   - ```CONFIG_PATH```
   - ```JELLYFIN_HDD```
@@ -101,7 +102,7 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - Update ```${CONFIG_PATH}/homepage/services.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/homepage/settings.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/homepage/widgets.yml``` based on the comments in the file
-- ```sudo docker-compose up -d```
+- ```sudo docker compose --profile all up -d --force-recreate --remove-orphans```
 - You can reach each container with the address defined in the ```.env``` file
 
 ---
@@ -145,6 +146,7 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - <https://github.com/benphelps/homepage/>
 - <https://hub.docker.com/r/linuxserver/duplicati>
 - <https://hub.docker.com/r/authelia/authelia>
+- <https://uptime.kuma.pet/>
 
 ---
 
