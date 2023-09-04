@@ -542,10 +542,11 @@ services:
 
   ###### Uptime kuma ######
   uptime-kuma:
+    profiles: ["all", "dev"]
     image: louislam/uptime-kuma:1
     container_name: uptime-kuma
     volumes:
-      - ${HDD_PATH}/_cache/uptime-kuma/data:/app/data
+      - ${CONFIG_PATH}/uptime-kuma/data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
       - 3001:3001

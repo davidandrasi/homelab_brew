@@ -75,7 +75,6 @@ Docker containers for Raspberry Pi based Advanced Home Server
   - ```HDD_PATH```
   - ```HDD_PATH/_backup```
   - ```HDD_PATH/_cache```
-  - ```HDD_PATH/_cache/uptime-kuma/data```
   - ```HDD_PATH_SHARED```
   - ```CONFIG_PATH```
   - ```JELLYFIN_HDD```
