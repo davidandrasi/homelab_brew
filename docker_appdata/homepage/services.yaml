@@ -8,11 +8,11 @@
         icon: portainer.png
         server: my-docker
         container: portainer
-#        widget:
-#            type: portainer
-#            env: 2
-#            url: https://portainer.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
-#            key: apikey # Update with api key
+        widget:
+            type: portainer
+            env: 2
+            url: https://portainer.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
+            key: apikey # Update with api key
 
     - Traefik:
         href: https://traefik.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
@@ -20,9 +20,9 @@
         icon: traefik.png
         server: my-docker
         container: traefik
-#        widget:
-#            type: traefik
-#            url: https://traefik.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
+        widget:
+            type: traefik
+            url: https://traefik.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
 #            username: username # Update with your corresponding username
 #            password: password # Update with your corresponding password
 
@@ -32,10 +32,10 @@
         icon: pi-hole.png
         server: my-docker
         container: pihole
-#        widget:
-#            type: pihole
-#            url: http://pihole.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
-#            key: apikey # Update with api key
+        widget:
+            type: pihole
+            url: http://pihole.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
+            key: apikey # Update with api key
 #            username: username # Update with your corresponding username
 #            password: password # Update with your corresponding password
 
@@ -45,9 +45,9 @@
         icon: prometheus.png
         server: my-docker
         container: prometheus
-#        widget:
-#            type: prometheus
-#            url: https://prometheus.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
+        widget:
+            type: prometheus
+            url: https://prometheus.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
 #            username: username # Update with your corresponding username
 #            password: password # Update with your corresponding password
 
@@ -57,11 +57,11 @@
         icon: grafana.png
         server: my-docker
         container: grafana
-#        widget:
-#            type: grafana
-#            url: https://grafana.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
-#            username: username # Update with your corresponding username
-#            password: password # Update with your corresponding password
+        widget:
+            type: grafana
+            url: https://grafana.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
+            username: username # Update with your corresponding username
+            password: password # Update with your corresponding password
 
     - Uptime-kuma:
         href: https://uptimekuma.subdomain.mydomain.org # Update with your domain address configured in .env file next to the do>
@@ -108,11 +108,11 @@
         icon: qbittorrent.png
         server: my-docker
         container: qbittorrent
-#        widget:
-#            type: qbittorrent
-#            url: http://qbittorrent.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
-#            username: username # Update with your corresponding username
-#            password: password # Update with your corresponding password
+        widget:
+            type: qbittorrent
+            url: http://qbittorrent.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
+            username: username # Update with your corresponding username
+            password: password # Update with your corresponding password
 
     - Jellyfin:
         href: https://jellyfin.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
@@ -120,12 +120,12 @@
         icon: jellyfin.png
         server: my-docker
         container: jellyfin
-#        widget:
-#            type: jellyfin
-#            url: http://jellyfin.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
-#            key: apikey # Update with api key
-#            enableBlocks: true
-#            enableNowPlaying: true
+        widget:
+            type: jellyfin
+            url: http://jellyfin.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
+            key: apikey # Update with api key
+            enableBlocks: true
+            enableNowPlaying: true
 
     - Filebrowser:
         href: https://filebrowser.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
