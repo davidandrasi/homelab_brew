@@ -93,7 +93,6 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - Update ```.env``` file based on the comments in the file
 - Update ```${CONFIG_PATH}/authelia/configuration.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/authelia/users_database.yml``` based on the comments in the file
-- Update ```${CONFIG_PATH}/traefik/rules.toml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/prometheus/prometheus.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/grafana/provisioning/datasources/datasource.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/grafana/config.monitoring``` based on the comments in the file
