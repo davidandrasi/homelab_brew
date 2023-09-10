@@ -1,6 +1,6 @@
 # HomeLab Brew
 
-![RPI BREW LOGO](images/rpi_brew_logo.jpeg)
+![RPI BREW LOGO](images/homelab_brew_logo.jpeg)
 
 Docker compose setup for a Homelab Server (Raspberry Pi, NUC...)
 
