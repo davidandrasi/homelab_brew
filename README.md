@@ -1,12 +1,12 @@
-# RPI BREW
+# HomeLab Brew
 
 ![RPI BREW LOGO](images/rpi_brew_logo.jpeg)
 
-Docker containers for Raspberry Pi based Advanced Home Server
+Docker compose setup for a Homelab Server (Raspberry Pi, NUC...)
 
 ---
 
-## Prerequisites
+## Prerequisites (tested on)
 
 - Raspberry Pi 2-4
 - Class10 Micro SD Card with minimum 16GB, but suggested 32GB storage capacity
@@ -14,57 +14,78 @@ Docker containers for Raspberry Pi based Advanced Home Server
 - LAN cable (Wifi could be ok, but if you plan with higher traffic, I suggest LAN cable)
 - Optional passive cooling case
 
+OR
+
+- Intel NUC
+- 16-32GB DDR4 RAM
+- 1TB NVMe SSD
+- External HDD
+- LAN cable (Wifi could be ok, but if you plan with higher traffic, I suggest LAN cable)
+
 ---
 
 ## Installation
 
-- Install Raspberry Pi OS based on this instruction  
-(I used the 64bit lite image for my Raspberry Pi 4 4GB version):  
-<https://www.raspberrypi.com/documentation/computers/getting-started.html#using-raspberry-pi-imager>
-- Open the following ports in your router settings towards Raspberry Pi: 22, 80, 443
-- Format the HDD to ext4 filesystem:  
-<https://www.tecmint.com/create-new-ext4-file-system-partition-in-linux/>
-- Setup the auto mount of the external HDD with fstab:  
-<https://www.shellhacks.com/raspberry-pi-mount-usb-drive-automatically/>
-- Install docker:  
-<https://www.simplilearn.com/tutorials/docker-tutorial/raspberry-pi-docker>
-- Install docker-compose:  
-<https://dev.to/elalemanyo/how-to-install-docker-and-docker-compose-on-raspberry-pi-1mo>
-- Configure your router to have the same internal IP for your Raspberry Pi everytime (Manual IP of device to DHCP list in router)
-- Disable userland-proxy:  
-  1. Create/edit ```/etc/docker/daemon.json```
-  2. Add this:  
+- ### Raspberry Pi
 
-      ```yaml
-      {
-        "userland-proxy": false,
-        "iptables": true
-      }
+  - Install Raspberry Pi OS based on this instruction  
+  (I used the 64bit lite image for my Raspberry Pi 4 4GB version):  
+  <https://www.raspberrypi.com/documentation/computers/getting-started.html#using-raspberry-pi-imager>
+  - Open the following ports in your router settings towards Raspberry Pi: 22, 80, 443
+  - Format the HDD to ext4 filesystem:  
+  <https://www.tecmint.com/create-new-ext4-file-system-partition-in-linux/>
+  - Setup the auto mount of the external HDD with fstab:  
+  <https://www.shellhacks.com/raspberry-pi-mount-usb-drive-automatically/>
+  - Install docker:  
+  <https://www.simplilearn.com/tutorials/docker-tutorial/raspberry-pi-docker>
+  - Install docker-compose:  
+  <https://dev.to/elalemanyo/how-to-install-docker-and-docker-compose-on-raspberry-pi-1mo>
+  - Configure your router to have the same internal IP for your Raspberry Pi everytime (Manual IP of device to DHCP list in router)
+  - Disable userland-proxy:  
+    1. Create/edit ```/etc/docker/daemon.json```
+    2. Add this:  
+
+        ```yaml
+        {
+          "userland-proxy": false,
+          "iptables": true
+        }
+        ```
+
+    3. Restart docker: ```sudo systemctl restart docker```
+    4. If not done automatically, it may also be necessary to run:  
+    ```/sbin/sysctl net.ipv4.conf.docker0.route_localnet=1```
+- ### Intel NUC
+
+  - Install Ubuntu Server to your NUC as per this guide:
+  <https://swati-goyal.medium.com/how-to-setup-nuc-with-ubuntu-server-e15485fa1323>
+  - Install Docker engine to your Ubuntu Server:
+  <https://docs.docker.com/engine/install/ubuntu/>
+  - Optionally add Desktop GUI (not needed normally, it is your preference if you are more comfortable with it):
+  <https://phoenixnap.com/kb/how-to-install-a-gui-on-ubuntu>
+
+- ### Steps for both RPi and NUC
+  
+  - Make sure to have DNS servers are permanently present in ```/etc/resolv.conf```:
+    - ```sudo apt install resolvconf```
+    - Open ```/etc/resolvconf/resolv.conf.d/base``` and add the following lines:  
+
+      ```config
+      nameserver 8.8.8.8
+      nameserver 8.8.4.4
       ```
 
-  3. Restart docker: ```sudo systemctl restart docker```
-  4. If not done automatically, it may also be necessary to run:  
-  ```/sbin/sysctl net.ipv4.conf.docker0.route_localnet=1```
-- Make sure to have DNS servers are permanently present in ```/etc/resolv.conf```:
-  - ```sudo apt install resolvconf```
-  - Open ```/etc/resolvconf/resolv.conf.d/base``` and add the following lines:  
-
-    ```config
-    nameserver 8.8.8.8
-    nameserver 8.8.4.4
-    ```
-
-  - ```sudo resolvconf -u```
-  - ```systemctl status systemd-resolved.service```
-  - ```systemctl enable systemd-resolved.service```
-  - Try ```resolvectl status```
-- Free up port 53 for Pi-hole:
-  - ```sudo systemctl stop systemd-resolved```
-  - Edit ```/etc/systemd/resolved.conf```
-    - ```DNSStubListener=no```
-  - ```sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf```
-- You might increase the default swap size from 100MB to 1GB:  
-<https://nebl.io/neblio-university/enabling-increasing-raspberry-pi-swap>
+    - ```sudo resolvconf -u```
+    - ```systemctl status systemd-resolved.service```
+    - ```systemctl enable systemd-resolved.service```
+    - Try ```resolvectl status```
+  - Free up port 53 for Pi-hole:
+    - ```sudo systemctl stop systemd-resolved```
+    - Edit ```/etc/systemd/resolved.conf```
+      - ```DNSStubListener=no```
+    - ```sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf```
+  - You might increase the default swap size from 100MB to 1GB:  
+  <https://nebl.io/neblio-university/enabling-increasing-raspberry-pi-swap>
 
 ---
 
@@ -122,7 +143,7 @@ Docker containers for Raspberry Pi based Advanced Home Server
 
 ## Containers used
 
-- <https://hub.docker.com/r/containous/whoami>
+- <https://hub.docker.com/r/traefik/whoami>
 - <https://hub.docker.com/r/dperson/samba>
 - <https://hub.docker.com/r/vladgh/minidlna>
 - <https://hub.docker.com/r/linuxserver/wikijs>
