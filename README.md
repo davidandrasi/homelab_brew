@@ -57,11 +57,11 @@ OR
     ```/sbin/sysctl net.ipv4.conf.docker0.route_localnet=1```
 - ### Intel NUC
 
-  - Install Ubuntu Server to your NUC as per this guide:
+  - Install Ubuntu Server to your NUC as per this guide:  
   <https://swati-goyal.medium.com/how-to-setup-nuc-with-ubuntu-server-e15485fa1323>
-  - Install Docker engine to your Ubuntu Server:
+  - Install Docker engine to your Ubuntu Server:  
   <https://docs.docker.com/engine/install/ubuntu/>
-  - Optionally add Desktop GUI (not needed normally, it is your preference if you are more comfortable with it):
+  - Optionally add Desktop GUI (not needed normally, it is your preference if you are more comfortable with it):  
   <https://phoenixnap.com/kb/how-to-install-a-gui-on-ubuntu>
 
 - ### Steps for both RPi and NUC
