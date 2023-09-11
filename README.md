@@ -55,6 +55,7 @@ OR
     3. Restart docker: ```sudo systemctl restart docker```
     4. If not done automatically, it may also be necessary to run:  
     ```/sbin/sysctl net.ipv4.conf.docker0.route_localnet=1```
+
 - ### Intel NUC
 
   - Install Ubuntu Server to your NUC as per this guide:  
@@ -117,6 +118,7 @@ OR
 - Update ```${CONFIG_PATH}/prometheus/prometheus.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/grafana/provisioning/datasources/datasource.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/grafana/config.monitoring``` based on the comments in the file
+- Update ```${CONFIG_PATH}/promtail/promtail-config.yaml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/homepage/bookmarks.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/homepage/services.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/homepage/settings.yml``` based on the comments in the file
@@ -128,16 +130,38 @@ OR
 
 ## Configure the containers
 
-- Grafana:
-  - Set allowed cookies of Authelia session cookie:
-    - ```Home --> Connections --> Data sources --> Prometheus --> Allowed cookies: Add "authelia_session" --> Click Save & test```
-- Jellyfin:  
-(These steps are must, if you want to save space during Jellyfin streaming with transcoding, cache and metadata,since it is generating huge files, so I suggest to put it into the HDD, not to SD card where the default config sets)
-  - Set Jellyfin custom transcode cache path to your prevously set in the ```.env```: ```Settings --> Playback --> Transcode path``` (dont forget to click on save after)
-  - Set Jellyfin custom cache path to your prevously set in the ```.env```: ```Settings --> General --> Cache path``` (dont forget to click on save after)
-  - Set Jellyfin custom metadata path to your prevously set in the ```.env```: ```Settings --> General --> Metadata path``` (dont forget to click on save after)
-  - Add your Rasbpberry Pi's IP address as a primary DNS server to your router configuration to make sure that every of your device conntcted to the router will be ad-free
-    - Optional: update Pi-hole ad-list with additional database URLs
+**- Grafana:**
+
+- Set allowed cookies of Authelia session cookie:
+  ```Home --> Connections --> Data sources --> Prometheus --> Allowed cookies: Add "authelia_session" --> Click Save & test```
+
+**- Loki:**  
+You have to configure docker to stream it's container logs into Loki directly
+
+- Install Loki Docker Driver:
+  ```docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions```
+- Edit Docker daemon.json:
+  ```sudo nano /etc/docker/daemon.json```
+- Add the following lines and save:
+
+  ```config
+  {
+    "log-driver": "loki",
+    "log-opts": {
+        "loki-url": "http://localhost:3100/loki/api/v1/push",
+        "loki-batch-size": "400"
+    }
+  }
+  ```
+
+**- Jellyfin:**  
+(These steps are must, if you want to save space during Jellyfin streaming with transcoding, cache and metadata, since it is generating huge files, so I suggest to put it into the HDD, not to SD card where the default config sets)
+
+- Set Jellyfin custom transcode cache path to your prevously set in the ```.env```: ```Settings --> Playback --> Transcode path``` (dont forget to click on save after)
+- Set Jellyfin custom cache path to your prevously set in the ```.env```: ```Settings --> General --> Cache path``` (dont forget to click on save after)
+- Set Jellyfin custom metadata path to your prevously set in the ```.env```: ```Settings --> General --> Metadata path``` (dont forget to click on save after)
+- Add your Rasbpberry Pi's IP address as a primary DNS server to your router configuration to make sure that every of your device conntcted to the router will be ad-free
+  - Optional: update Pi-hole ad-list with additional database URLs
 
 ---
 
@@ -162,6 +186,9 @@ OR
 - <https://hub.docker.com/r/prom/prometheus>
 - <https://hub.docker.com/r/prom/node-exporter>
 - <https://hub.docker.com/r/grafana/grafana>
+- <https://hub.docker.com/r/grafana/loki>
+- <https://hub.docker.com/r/grafana/promtail>
+- <https://hub.docker.com/r/grafana/loki-docker-driver>
 - <https://github.com/benphelps/homepage/>
 - <https://hub.docker.com/r/linuxserver/duplicati>
 - <https://hub.docker.com/r/authelia/authelia>
@@ -177,3 +204,6 @@ OR
 - <https://gethomepage.dev/>
 - <https://github.com/marcogreiveldinger/videos/tree/main/authelia>
 - <https://technotim.live/posts/authelia-traefik/>
+- <https://technotim.live/posts/grafana-loki/>
+- <https://www.youtube.com/@TechnoTim>
+- <https://www.youtube.com/@christianlempa>

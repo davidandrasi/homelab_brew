@@ -169,6 +169,8 @@ services:
     container_name: grafana
     depends_on:
       - prometheus
+    ports:
+      - 3000:3000
     volumes:
       - grafana_data:/var/lib/grafana
       - ${CONFIG_PATH}/grafana/provisioning/:/etc/grafana/provisioning/
@@ -196,6 +198,33 @@ services:
       traefik.http.routers.grafana_internal.service: "grafana"
       traefik.http.services.grafana_internal.loadbalancer.server.port: "3000"
       traefik.http.routers.grafana_internal.priority: 2
+    restart: unless-stopped
+
+  ###### Loki ######
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    profiles: ["all", "dev"]
+    ports:
+      - "3100:3100"
+    volumes:
+      - ${CONFIG_PATH}/loki:/etc/loki
+    command: -config.file=/etc/loki/loki-config.yaml
+    network_mode: bridge
+    restart: unless-stopped
+
+  ###### Promtail ######
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    profiles: ["all", "dev"]
+    # ports:
+    #   - "1514:1514" # this is only needed if you are going to send syslogs
+    volumes:
+      - /var/log:/var/log
+      - ${CONFIG_PATH}/promtail:/etc/promtail
+    command: -config.file=/etc/promtail/promtail-config.yaml
+    network_mode: bridge
     restart: unless-stopped
 
   ###### Portainer ######
@@ -269,7 +298,7 @@ services:
       - "-s"
       - "docker_compose;/docker_compose;yes;no;no;admin;admin;admin"
       - "-s"
-      - "rpi_brew;/rpi_brew;yes;no;no;admin;admin;admin"
+      - "homelab_brew;/homelab_brew;yes;no;no;admin;admin;admin"
       - "-p"
     container_name: "samba"
     image: "dperson/samba:latest"
@@ -289,7 +318,7 @@ services:
       - "etc_samba:/etc"
       - "run_samba:/run/samba"
       - "${HDD_PATH_SHARED}:/rpi_shared"
-      - "${MYHOME}/rpi_brew:/rpi_brew" # TODO remove
+      - "${MYHOME}/homelab_brew:/homelab_brew" # TODO remove
       - "${MYHOME}/docker_compose:/docker_compose" # TODO remove
 
   ###### Minidlna ######
@@ -326,7 +355,7 @@ services:
       traefik.http.routers.wikijs_internal.priority: 2
     network_mode: "bridge"
     ports:
-      - "3100:3000/tcp"
+      - "4000:3000/tcp"
     restart: "unless-stopped"
     environment:
       - "TZ=${TZ}"

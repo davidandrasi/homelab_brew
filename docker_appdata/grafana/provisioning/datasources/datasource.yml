@@ -53,3 +53,11 @@ datasources:
 #    tlsClientKey: "..."
 #  version: 1
 #  editable: true
+- name: Loki-local
+  type: loki
+  access: proxy
+  # TODO Add your Loki IP and port here
+  url: http://192.168.X.Y:3100
+  url: "http://192.168.50.245:3100"
+  jsonData:
+    maxLines: 1000
