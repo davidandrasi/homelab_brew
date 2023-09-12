@@ -3,6 +3,7 @@ apiVersion: 1
 deleteDatasources:
   - name: Prometheus
 #  - name: Prometheus-local
+  - name: Loki-local
 
 datasources:
 - name: Prometheus
@@ -61,3 +62,4 @@ datasources:
   url: "http://192.168.50.245:3100"
   jsonData:
     maxLines: 1000
+  editable: true
