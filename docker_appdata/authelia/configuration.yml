@@ -36,10 +36,16 @@ access_control:
   default_policy: deny
   rules:
     # UPDATE THESE WHOLE SECTION
-    - domain: unsecure.whoami.example.com
+    #- domain: unsecure.whoami.example.com
+    #  policy: bypass
+    #- domain: secure.whoami.example.com
+    #  policy: one_factor
+
+    # IMPORTANT: This means, that authelia 2FA is only from non-local network forced for your convenience
+    - domain: "*.example.com"
       policy: bypass
-    - domain: secure.whoami.example.com
-      policy: one_factor
+      networks:
+        - 192.168.1.0/24  # TODO Add your subnet here
     - domain: "*.example.com"
       policy: two_factor
 

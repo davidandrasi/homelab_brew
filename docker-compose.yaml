@@ -42,20 +42,12 @@ services:
       - authelia
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.api.entrypoints: "websecure"
       traefik.http.routers.api.rule: "Host(`${TRAEFIK_TRAEFIK_HOST}`)"
       traefik.http.routers.api.service: "api@internal"
       traefik.http.routers.api.tls.certresolver: "myresolver"
       traefik.http.routers.api.middlewares: "basic-auth@docker"
       traefik.http.middlewares.basic-auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
-      traefik.http.routers.api.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.api_internal.entrypoints: "websecure"
-      traefik.http.routers.api_internal.rule: "Host(`${TRAEFIK_TRAEFIK_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.api_internal.service: "api@internal"
-      traefik.http.routers.api_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.api_internal.priority: 2
     network_mode: "bridge"
     ports:
       - "443:443"
@@ -124,21 +116,12 @@ services:
     labels:
       traefik.enable: "true"
       traefik.docker.network: "bridge"
-      ### With authentication ###
       traefik.http.routers.prometheus.entrypoints: "websecure"
       traefik.http.routers.prometheus.rule: "Host(`${TRAEFIK_PROMETHEUS_HOST}`)"
       traefik.http.routers.prometheus.tls.certresolver: "myresolver"
       traefik.http.routers.prometheus.service: "prometheus"
       traefik.http.services.prometheus.loadbalancer.server.port: "9090"
       traefik.http.routers.prometheus.middlewares: authelia@docker
-      traefik.http.routers.prometheus.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.prometheus_internal.entrypoints: "websecure"
-      traefik.http.routers.prometheus_internal.rule: "Host(`${TRAEFIK_PROMETHEUS_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.prometheus_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.prometheus_internal.service: "prometheus"
-      traefik.http.services.prometheus_internal.loadbalancer.server.port: "9090"
-      traefik.http.routers.prometheus_internal.priority: 2
     restart: "unless-stopped"
 
   ###### Prometheus node-exporter ######
@@ -183,21 +166,12 @@ services:
     labels:
       traefik.enable: "true"
       traefik.docker.network: "bridge"
-      ### With authentication ###
       traefik.http.routers.grafana.entrypoints: "websecure"
       traefik.http.routers.grafana.rule: "Host(`${TRAEFIK_GRAFANA_HOST}`)"
       traefik.http.routers.grafana.tls.certresolver: "myresolver"
       traefik.http.routers.grafana.service: "grafana"
       traefik.http.services.grafana.loadbalancer.server.port: "3000"
       traefik.http.routers.grafana.middlewares: authelia@docker
-      traefik.http.routers.grafana.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.grafana_internal.entrypoints: "websecure"
-      traefik.http.routers.grafana_internal.rule: "Host(`${TRAEFIK_GRAFANA_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.grafana_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.grafana_internal.service: "grafana"
-      traefik.http.services.grafana_internal.loadbalancer.server.port: "3000"
-      traefik.http.routers.grafana_internal.priority: 2
     restart: unless-stopped
 
   ###### Loki ######
@@ -240,7 +214,6 @@ services:
       - "TZ=${TZ}"
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.portainer.entrypoints: "websecure"
       traefik.http.routers.portainer.rule: "Host(`${TRAEFIK_PORTAINER_HOST}`)"
       traefik.http.routers.portainer.tls: "true"
@@ -248,15 +221,6 @@ services:
       traefik.http.routers.portainer.middlewares: authelia@docker
       traefik.http.services.portainer.loadbalancer.server.port: 9000
       traefik.http.routers.portainer.service: portainer
-      traefik.http.routers.portainer.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.portainer_internal.entrypoints: "websecure"
-      traefik.http.routers.portainer_internal.rule: "Host(`${TRAEFIK_PORTAINER_HOST}`)"
-      traefik.http.routers.portainer_internal.tls: "true"
-      traefik.http.routers.portainer_internal.tls.certresolver: "myresolver"
-      traefik.http.services.portainer_internal.loadbalancer.server.port: 9000
-      traefik.http.routers.portainer_internal.service: portainer
-      traefik.http.routers.portainer_internal.priority: 2
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
@@ -268,19 +232,11 @@ services:
     image: "traefik/whoami:latest"
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.whoami.entrypoints: "websecure"
       traefik.http.routers.whoami.rule: "Host(`${TRAEFIK_WHOAMI_HOST}`)"
       traefik.http.routers.whoami.tls: "true"
       traefik.http.routers.whoami.tls.certresolver: "myresolver"
       traefik.http.routers.whoami.middlewares: authelia@docker
-      traefik.http.routers.whoami.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.whoami_internal.entrypoints: "websecure"
-      traefik.http.routers.whoami_internal.rule: "Host(`${TRAEFIK_WHOAMI_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.whoami_internal.tls: "true"
-      traefik.http.routers.whoami_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.whoami_internal.priority: 2
     network_mode: "bridge"
     restart: "unless-stopped"
     environment:
@@ -297,6 +253,8 @@ services:
       - "shared;/rpi_shared;yes;no;no;admin;admin;admin"
       - "-s"
       - "docker_compose;/docker_compose;yes;no;no;admin;admin;admin"
+      - "-s"
+      - "docker_appdata;/docker_appdata;yes;no;no;admin;admin;admin"
       - "-s"
       - "homelab_brew;/homelab_brew;yes;no;no;admin;admin;admin"
       - "-p"
@@ -320,6 +278,7 @@ services:
       - "${HDD_PATH_SHARED}:/rpi_shared"
       - "${MYHOME}/homelab_brew:/homelab_brew" # TODO remove
       - "${MYHOME}/docker_compose:/docker_compose" # TODO remove
+      - "${MYHOME}/docker_appdata:/docker_appdata" # TODO remove
 
   ###### Minidlna ######
   minidlna:
@@ -342,17 +301,10 @@ services:
     image: "linuxserver/wikijs:latest"
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.wikijs.entrypoints: "websecure"
       traefik.http.routers.wikijs.rule: "Host(`${TRAEFIK_WIKIJS_HOST}`)"
       traefik.http.routers.wikijs.tls.certresolver: "myresolver"
       traefik.http.routers.wikijs.middlewares: authelia@docker
-      traefik.http.routers.wikijs.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.wikijs_internal.entrypoints: "websecure"
-      traefik.http.routers.wikijs_internal.rule: "Host(`${TRAEFIK_WIKIJS_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.wikijs_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.wikijs_internal.priority: 2
     network_mode: "bridge"
     ports:
       - "4000:3000/tcp"
@@ -370,17 +322,10 @@ services:
     image: "linuxserver/librespeed:latest"
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.librespeed.entrypoints: "websecure"
       traefik.http.routers.librespeed.rule: "Host(`${TRAEFIK_LIBRESPEED_HOST}`)"
       traefik.http.routers.librespeed.tls.certresolver: "myresolver"
       traefik.http.routers.librespeed.middlewares: "authelia@docker"
-      traefik.http.routers.librespeed.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.librespeed_internal.entrypoints: "websecure"
-      traefik.http.routers.librespeed_internal.rule: "Host(`${TRAEFIK_LIBRESPEED_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.librespeed_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.librespeed_internal.priority: 2
     network_mode: "bridge"
     restart: "unless-stopped"
     environment:
@@ -395,17 +340,10 @@ services:
     image: "hurlenko/filebrowser:latest"
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.filebrowser.entrypoints: "websecure"
       traefik.http.routers.filebrowser.rule: "Host(`${TRAEFIK_FILEBROWSER_HOST}`)"
       traefik.http.routers.filebrowser.tls.certresolver: "myresolver"
       traefik.http.routers.filebrowser.middlewares: "authelia@docker"
-      traefik.http.routers.filebrowser.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.filebrowser_internal.entrypoints: "websecure"
-      traefik.http.routers.filebrowser_internal.rule: "Host(`${TRAEFIK_FILEBROWSER_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.filebrowser_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.filebrowser_internal.priority: 2
     network_mode: "bridge"
     ports:
       - "8081:8081/tcp"
@@ -436,17 +374,10 @@ services:
       - "duplicati_source:/source"
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.duplicati.entrypoints: "websecure"
       traefik.http.routers.duplicati.rule: "Host(`${TRAEFIK_DUPLICATI_HOST}`)"
       traefik.http.routers.duplicati.tls.certresolver: "myresolver"
       traefik.http.routers.duplicati.middlewares: "authelia@docker"
-      traefik.http.routers.duplicati.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.duplicati_internal.entrypoints: "websecure"
-      traefik.http.routers.duplicati_internal.rule: "Host(`${TRAEFIK_DUPLICATI_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.duplicati_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.duplicati_internal.priority: 2
     ports:
       - 8300:8300
     network_mode: "bridge"
@@ -467,17 +398,10 @@ services:
     image: "linuxserver/jellyfin:latest"
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.jellyfin.entrypoints: "websecure"
       traefik.http.routers.jellyfin.rule: "Host(`${TRAEFIK_JELLYFIN_HOST}`)"
       traefik.http.routers.jellyfin.tls.certresolver: "myresolver"
       traefik.http.routers.jellyfin.middlewares: authelia@docker
-      traefik.http.routers.jellyfin.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.jellyfin_internal.entrypoints: "websecure"
-      traefik.http.routers.jellyfin_internal.rule: "Host(`${TRAEFIK_JELLYFIN_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.jellyfin_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.jellyfin_internal.priority: 2
     network_mode: "bridge"
     ports:
       - "8096:8096/tcp"
@@ -504,17 +428,10 @@ services:
     image: "ghcr.io/linuxserver/dokuwiki:latest"
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.dokuwiki.entrypoints: "websecure"
       traefik.http.routers.dokuwiki.rule: "Host(`${TRAEFIK_DOKUWIKI_HOST}`)"
       traefik.http.routers.dokuwiki.tls.certresolver: "myresolver"
       traefik.http.routers.dokuwiki.middlewares: authelia@docker
-      traefik.http.routers.dokuwiki.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.dokuwiki_internal.entrypoints: "websecure"
-      traefik.http.routers.dokuwiki_internal.rule: "Host(`${TRAEFIK_DOKUWIKI_HOST}`)"
-      traefik.http.routers.dokuwiki_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.dokuwiki_internal.priority: 2
     network_mode: "bridge"
     restart: "unless-stopped"
     volumes:
@@ -581,17 +498,10 @@ services:
     image: "linuxserver/qbittorrent:latest"
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.qbittorrent.entrypoints: "websecure"
       traefik.http.routers.qbittorrent.rule: "Host(`${TRAEFIK_QBITTORRENT_HOST}`)"
       traefik.http.routers.qbittorrent.tls.certresolver: "myresolver"
       traefik.http.routers.qbittorrent.middlewares: authelia@docker
-      traefik.http.routers.qbittorrent.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.qbittorrent_internal.entrypoints: "websecure"
-      traefik.http.routers.qbittorrent_internal.rule: "Host(`${TRAEFIK_QBITTORRENT_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.qbittorrent_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.qbittorrent_internal.priority: 2
     network_mode: "bridge"
     ports:
       - "5555:5555/tcp"
@@ -614,21 +524,12 @@ services:
     image: "pihole/pihole:latest"
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.pihole.rule: "Host(`${TRAEFIK_PIHOLE_HOST}`)"
       traefik.http.routers.pihole.service: "pihole"
       traefik.http.routers.pihole.tls: "true"
       traefik.http.routers.pihole.tls.certresolver: "myresolver"
       traefik.http.services.pihole.loadBalancer.server.port: "80"
       traefik.http.routers.pihole.middlewares: authelia@docker
-      traefik.http.routers.pihole.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.pihole_internal.rule: "Host(`${TRAEFIK_PIHOLE_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.pihole_internal.service: "pihole"
-      traefik.http.routers.pihole_internal.tls: "true"
-      traefik.http.routers.pihole_internal.tls.certresolver: "myresolver"
-      traefik.http.services.pihole_internal.loadBalancer.server.port: "80"
-      traefik.http.routers.pihole_internal.priority: 2
     network_mode: "bridge"
     ports:
       - "53:53/tcp"
@@ -651,17 +552,10 @@ services:
   #   image: "lscr.io/linuxserver/heimdall:latest"
   #   labels:
   #     traefik.enable: "true"
-  #     ### With authentication ###
   #     traefik.http.routers.heimdall.entrypoints: "websecure"
   #     traefik.http.routers.heimdall.rule: "Host(`${TRAEFIK_HEIMDALL_HOST}`)"
   #     traefik.http.routers.heimdall.tls.certresolver: "myresolver"
   #     traefik.http.routers.heimdall.middlewares: authelia@docker
-  #     traefik.http.routers.heimdall.priority: 1
-  #     ### Without authentication from internal network ###
-  #     traefik.http.routers.heimdall_internal.entrypoints: "websecure"
-  #     traefik.http.routers.heimdall_internal.rule: "Host(`${TRAEFIK_HEIMDALL_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-  #     traefik.http.routers.heimdall_internal.tls.certresolver: "myresolver"
-  #     traefik.http.routers.heimdall_internal.priority: 2
   #   network_mode: "bridge"
   #   restart: "unless-stopped"
   #   volumes:
@@ -678,17 +572,10 @@ services:
       - "TZ=${TZ}"
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.homepage.entrypoints: "websecure"
       traefik.http.routers.homepage.rule: "Host(`${TRAEFIK_DEFAULT_HOST}`, `${TRAEFIK_HOMEPAGE_HOST}`)"
       traefik.http.routers.homepage.tls.certresolver: "myresolver"
       traefik.http.routers.homepage.middlewares: authelia@docker
-      traefik.http.routers.homepage.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.homepage_internal.entrypoints: "websecure"
-      traefik.http.routers.homepage_internal.rule: "Host(`${TRAEFIK_DEFAULT_HOST}`, `${TRAEFIK_HOMEPAGE_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.homepage_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.homepage_internal.priority: 2
     volumes:
       - ${CONFIG_PATH}/homepage/:/app/config
       - ${HDD_PATH}/:/mnt/hdd:ro
@@ -707,17 +594,10 @@ services:
       - 3001:3001
     labels:
       traefik.enable: "true"
-      ### With authentication ###
       traefik.http.routers.uptime_kuma.entrypoints: "websecure"
       traefik.http.routers.uptime_kuma.rule: "Host(`${TRAEFIK_UPTIMEKUMA_HOST}`)"
       traefik.http.routers.uptime_kuma.tls.certresolver: "myresolver"
       traefik.http.routers.uptime_kuma.middlewares: authelia@docker
-      traefik.http.routers.uptime_kuma.priority: 1
-      ### Without authentication from internal network ###
-      traefik.http.routers.uptime_kuma_internal.entrypoints: "websecure"
-      traefik.http.routers.uptime_kuma_internal.rule: "Host(`${TRAEFIK_UPTIMEKUMA_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-      traefik.http.routers.uptime_kuma_internal.tls.certresolver: "myresolver"
-      traefik.http.routers.uptime_kuma_internal.priority: 2
     restart: unless-stopped
     network_mode: "bridge"
     security_opt:
@@ -730,17 +610,10 @@ services:
   #   image: "selfhostedpro/yacht:latest"
   #   labels:
   #     traefik.enable: "true"
-  #     ### With authentication ###
   #     traefik.http.routers.yacht.entrypoints: "websecure"
   #     traefik.http.routers.yacht.rule: "Host(`${TRAEFIK_YACHT_HOST}`)"
   #     traefik.http.routers.yacht.tls.certresolver: "myresolver"
   #     traefik.http.routers.yacht.middlewares: authelia@docker
-  #     traefik.http.routers.yacht.priority: 1
-  #     ### Without authentication from internal network ###
-  #     traefik.http.routers.yacht_internal.entrypoints: "websecure"
-  #     traefik.http.routers.yacht_internal.rule: "Host(`${TRAEFIK_YACHT_HOST}`) && ClientIP(`${AUTHELIA_TRUSTED_IPS}`)"
-  #     traefik.http.routers.yacht_internal.tls.certresolver: "myresolver"
-  #     traefik.http.routers.yacht_internal.priority: 2
   #   network_mode: "bridge"
   #   ports:
   #     - "8001:8000/tcp"

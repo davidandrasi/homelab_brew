@@ -23,8 +23,8 @@
         widget:
             type: traefik
             url: https://traefik.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
-#            username: username # Update with your corresponding username
-#            password: password # Update with your corresponding password
+            username: username # Update with your corresponding username
+            password: password # Update with your corresponding password
 
     - Pi-hole:
         href: https://pihole.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
