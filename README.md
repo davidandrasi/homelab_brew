@@ -98,7 +98,7 @@ OR
   - ```HDD_PATH/_backup```
   - ```HDD_PATH/_cache```
   - ```HDD_PATH_SHARED```
-  - ```CONFIG_PATH```
+  - ```CONFIG_PATH``` (Copy configurations from the this to here)
   - ```JELLYFIN_HDD```
   - ```JELLYFIN_CACHE```
   - ```JELLYFIN_METADATA```
@@ -123,6 +123,8 @@ OR
 - Update ```${CONFIG_PATH}/homepage/services.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/homepage/settings.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/homepage/widgets.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/ntfy/server.yml``` based on the comments in the file
+  - Update ```base-url:```
 - ```sudo docker compose --profile all up -d --force-recreate --remove-orphans```
 - You can reach each container with the address defined in the ```.env``` file
 
@@ -163,6 +165,17 @@ You have to configure docker to stream it's container logs into Loki directly
 - Add your Rasbpberry Pi's IP address as a primary DNS server to your router configuration to make sure that every of your device conntcted to the router will be ad-free
   - Optional: update Pi-hole ad-list with additional database URLs
 
+**- Ntfy:**  
+
+- Setup notifications channels in the self-hosted URL you provided in the ```.env``` file
+- [Add users](https://docs.ntfy.sh/config/#access-control)
+  - ```sudo docker exec -it ntfy /bin/sh```
+  - ```ntfy user add USERNAME```
+  - ```ntfy user add --role=admin ADMINUSERNAME```
+- Download app for iOS or Android to get push notifications
+- After setting up the topic, lets try:
+  - ```curl --user "username:password" -d "Hey there" https://ntfy.yourdomain.example.com/test```
+
 ---
 
 ## Containers used
@@ -192,6 +205,7 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://github.com/benphelps/homepage/>
 - <https://hub.docker.com/r/linuxserver/duplicati>
 - <https://hub.docker.com/r/authelia/authelia>
+- <https://hub.docker.com/r/binwiederhier/ntfy>
 - <https://uptime.kuma.pet/>
 
 ---
@@ -207,3 +221,4 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://technotim.live/posts/grafana-loki/>
 - <https://www.youtube.com/@TechnoTim>
 - <https://www.youtube.com/@christianlempa>
+- <https://ntfy.sh/>

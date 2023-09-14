@@ -57,9 +57,7 @@ services:
     environment:
       - "TZ=${TZ}"
     volumes:
-      - "/etc/traefik/rules.yml:${CONFIG_PATH}/traefik/rules.yml"
       - "${CONFIG_PATH}/letsencrypt:/letsencrypt"
-      - "${CONFIG_PATH}/traefik/rules.toml:/etc/traefik/rules.toml"
       - "/var/run/docker.sock:/var/run/docker.sock"
 
   ###### Authelia ######
@@ -242,6 +240,31 @@ services:
     environment:
       - "TZ=${TZ}"
 
+  ###### Ntfy ######
+  ntfy:
+    image: binwiederhier/ntfy
+    container_name: ntfy
+    profiles: ["all", "dev"]
+    command:
+      - serve
+    environment:
+      - "TZ=${TZ}"
+    # user: UID:GID # optional: replace with your own user/group or uid/gid
+    volumes:
+      - ntfy_cache:/var/cache/ntfy
+      - ${CONFIG_PATH}/ntfy/:/etc/ntfy
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.ntfy.entrypoints: "websecure"
+      traefik.http.routers.ntfy.rule: "Host(`${TRAEFIK_NTFY_HOST}`)"
+      traefik.http.routers.ntfy.tls: "true"
+      traefik.http.routers.ntfy.tls.certresolver: "myresolver"
+      # traefik.http.routers.ntfy.middlewares: authelia@docker
+    network_mode: "bridge"
+    # ports:
+    #   - 3300:80
+    restart: unless-stopped
+
   ###### Samba ######
   samba:
     profiles: ["all", "dev"]
@@ -257,7 +280,7 @@ services:
       - "docker_appdata;/docker_appdata;yes;no;no;admin;admin;admin"
       - "-s"
       - "homelab_brew;/homelab_brew;yes;no;no;admin;admin;admin"
-      - "-p"
+      # - "-p"
     container_name: "samba"
     image: "dperson/samba:latest"
     network_mode: "bridge"
@@ -636,3 +659,4 @@ volumes:
   var_log_samba: {}
   etc_samba: {}
   run_samba: {}
+  ntfy_cache: {}
