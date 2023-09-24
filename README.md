@@ -162,7 +162,10 @@ You have to configure docker to stream it's container logs into Loki directly
 - Set Jellyfin custom transcode cache path to your prevously set in the ```.env```: ```Settings --> Playback --> Transcode path``` (dont forget to click on save after)
 - Set Jellyfin custom cache path to your prevously set in the ```.env```: ```Settings --> General --> Cache path``` (dont forget to click on save after)
 - Set Jellyfin custom metadata path to your prevously set in the ```.env```: ```Settings --> General --> Metadata path``` (dont forget to click on save after)
-- Add your Rasbpberry Pi's IP address as a primary DNS server to your router configuration to make sure that every of your device conntcted to the router will be ad-free
+
+**- Pi-hole:**  
+
+- Add your Rasbpberry Pi's IP address as a primary DNS server to your router configuration to make sure that every of your device connected to the router will be ad-free
   - Optional: update Pi-hole ad-list with additional database URLs
 
 **- Ntfy:**  
@@ -207,6 +210,7 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://hub.docker.com/r/authelia/authelia>
 - <https://hub.docker.com/r/binwiederhier/ntfy>
 - <https://uptime.kuma.pet/>
+- <https://hub.docker.com/r/linuxserver/plex>
 - <https://hub.docker.com/r/bxnxm/micros-gateway/>
 - <https://github.com/BxNxM/micrOS/>
 

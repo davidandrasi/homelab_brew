@@ -60,6 +60,35 @@ services:
       - "${CONFIG_PATH}/letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock"
 
+  ###### Plex ######
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    profiles: ["all", "dev"]
+    network_mode: bridge
+    devices:
+      - /dev/dri:/dev/dri # based on https://hub.docker.com/r/linuxserver/plex
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+      - "VERSION=docker"
+      - "PLEX_CLAIM=${PLEX_CLAIM}"
+    volumes:
+      - "${CONFIG_PATH}/plex:/config"
+      - "${HDD_PATH_SHARED}/:/shared"
+    ports:
+      - "32400:32400"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.plex.entrypoints: "websecure"
+      traefik.http.routers.plex.rule: "Host(`${TRAEFIK_PLEX_HOST}`)"
+      traefik.http.routers.plex.tls.certresolver: "myresolver"
+      traefik.http.services.plex.loadbalancer.server.port: 32400
+      traefik.http.routers.plex.middlewares: authelia@docker
+    restart: unless-stopped
+
+  ###### micrOS ######
   micros-gateway:
     profiles: ["all", "dev"]
     image: bxnxm/micros-gateway:1.22.5
