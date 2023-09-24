@@ -77,6 +77,13 @@
         server: my-docker
         container: minidlna
 
+    - micrOS:
+        href: https://micros.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docke>
+        description: micrOS
+        icon: python.png
+        server: my-docker
+        container: micros-gateway
+
     - Whoami:
         href: https://whoami.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker->
         description: Whoami

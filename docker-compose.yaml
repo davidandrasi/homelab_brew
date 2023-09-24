@@ -60,6 +60,23 @@ services:
       - "${CONFIG_PATH}/letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock"
 
+  micros-gateway:
+    profiles: ["all", "dev"]
+    image: bxnxm/micros-gateway:1.22.5
+    container_name: micros-gateway
+    environment:
+      - "TZ=${TZ}"
+      - GATEWAYIP=${GATEWAY_IP}"
+    ports:
+      - "5000:5000"  # Expose Flask REST API port to host
+    network_mode: "bridge"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.micros-gateway.entrypoints: "websecure"
+      traefik.http.routers.micros-gateway.rule: "Host(`${TRAEFIK_MICROS_HOST}`)"
+      traefik.http.routers.micros-gateway.tls.certresolver: "myresolver"
+      traefik.http.routers.micros-gateway.middlewares: authelia@docker
+
   ###### Authelia ######
   authelia:
     profiles: ["all", "dev"]
@@ -253,6 +270,7 @@ services:
     volumes:
       - ntfy_cache:/var/cache/ntfy
       - ${CONFIG_PATH}/ntfy/:/etc/ntfy
+      - ${CONFIG_PATH}/ntfy/data/:/data
     labels:
       traefik.enable: "true"
       traefik.http.routers.ntfy.entrypoints: "websecure"

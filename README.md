@@ -207,6 +207,8 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://hub.docker.com/r/authelia/authelia>
 - <https://hub.docker.com/r/binwiederhier/ntfy>
 - <https://uptime.kuma.pet/>
+- <https://hub.docker.com/r/bxnxm/micros-gateway/>
+- <https://github.com/BxNxM/micrOS/>
 
 ---
 
