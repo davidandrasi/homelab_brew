@@ -83,7 +83,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"micrOS_TerraceSensor__dht22_measure_temp\", instance=\"192.168.50.245:5000\", job=\"micros_gw_dht22\"}"
+              "options": "{__name__=\"micrOS_TerraceSensor__dht22_measure_temp\", instance=\"micros-gateway:5000\", job=\"micros_gw_dht22\"}"
             },
             "properties": [
               {
@@ -95,7 +95,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"micrOS_TerraceSensor__dht22_measure_hum\", instance=\"192.168.50.245:5000\", job=\"micros_gw_dht22\"}"
+              "options": "{__name__=\"micrOS_TerraceSensor__dht22_measure_hum\", instance=\"micros-gateway:5000\", job=\"micros_gw_dht22\"}"
             },
             "properties": [
               {
@@ -281,7 +281,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"micrOS_TerraceSensor__light_sensor_intensity_light\", instance=\"192.168.50.245:5000\", job=\"micros_gw_light\"}"
+              "options": "{__name__=\"micrOS_TerraceSensor__light_sensor_intensity_light\", instance=\"micros-gateway:5000\", job=\"micros_gw_light\"}"
             },
             "properties": [
               {

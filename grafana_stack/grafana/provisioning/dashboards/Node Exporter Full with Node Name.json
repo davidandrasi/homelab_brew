@@ -22070,33 +22070,6 @@
       {
         "current": {
           "selected": false,
-          "text": "192.168.50.245",
-          "value": "192.168.50.245"
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "PBFA97CFB590B2093"
-        },
-        "definition": "",
-        "hide": 2,
-        "includeAll": false,
-        "label": "Host:",
-        "multi": false,
-        "name": "node",
-        "options": [],
-        "query": "label_values(node_uname_info{nodename=\"$name\"}, instance)",
-        "refresh": 1,
-        "regex": "/([^:]+):.*/",
-        "skipUrlSync": false,
-        "sort": 1,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "current": {
-          "selected": false,
           "text": "9100",
           "value": "9100"
         },
