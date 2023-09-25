@@ -1,0 +1,58 @@
+version: "3.8"
+services:
+  ###### Duckdns ######
+  duckdns:
+    container_name: "duckdns"
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+      - "SUBDOMAINS=${SUBDOMAINS}"
+      - "TOKEN=${TOKEN}"
+    image: "linuxserver/duckdns:latest"
+    network_mode: "bridge"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/duckdns:/config"
+
+  ###### Heimdall ######
+  heimdall:
+    container_name: "heimdall"
+    environment:
+      - "TZ=${TZ}"
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+    image: "lscr.io/linuxserver/heimdall:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.heimdall.entrypoints: "websecure"
+      traefik.http.routers.heimdall.rule: "Host(`${TRAEFIK_HEIMDALL_HOST}`)"
+      traefik.http.routers.heimdall.tls.certresolver: "myresolver"
+      traefik.http.routers.heimdall.middlewares: authelia@docker
+    network_mode: "bridge"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/heimdall:/config"
+
+  ###### Yacht ######
+  yacht:
+    container_name: "yacht"
+    image: "selfhostedpro/yacht:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.yacht.entrypoints: "websecure"
+      traefik.http.routers.yacht.rule: "Host(`${TRAEFIK_YACHT_HOST}`)"
+      traefik.http.routers.yacht.tls.certresolver: "myresolver"
+      traefik.http.routers.yacht.middlewares: authelia@docker
+    network_mode: "bridge"
+    ports:
+      - "8001:8000/tcp"
+    restart: "unless-stopped"
+    environment:
+      - "TZ=${TZ}"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "yacht_data:/config"
+
+volumes:
+  yacht_data: {}

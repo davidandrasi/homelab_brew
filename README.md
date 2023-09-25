@@ -6,6 +6,10 @@ Docker compose setup for a Homelab Server (Raspberry Pi, NUC...)
 
 ---
 
+## Architecture (TO BE ADDED)
+
+---
+
 ## Prerequisites (tested on)
 
 - Raspberry Pi 2-4
@@ -92,41 +96,42 @@ OR
 
 ## Preparation
 
+(The repo contains 5 stack, each stack contains it's config and .env files.)
+
 - Clone the repository
-- Create the following folders from the ```.env``` file:
+- Create the following folders from the ```.env``` file of each of the stacks (core, extended, media, grafana, other):
   - ```HDD_PATH```
   - ```HDD_PATH/_backup```
   - ```HDD_PATH/_cache```
   - ```HDD_PATH_SHARED```
-  - ```CONFIG_PATH``` (Copy configurations from the this to here)
+  - ```CONFIG_PATH``` (each containers config is stored inside the stack folder)
   - ```JELLYFIN_HDD```
   - ```JELLYFIN_CACHE```
   - ```JELLYFIN_METADATA```
   - ```JELLYFIN_TRANSCODE_CACHE```
   - ```HDD_PATH_SHARED/downloads```
-- Copy configurations (docker_appdata folder) from repository to ```CONFIG_PATH```
 
 ---
 
 ## Configure the environment
 
 - Setup Dynamic DNS: Register and login to <https://www.dynu.com/en-US/ControlPanel/DDNS> or <https://www.duckdns.org/>, and add a subdomain you wish
-- ```sudo chmod 600 docker_appdata/letsencrypt/acme.json```
+- ```sudo chmod 600 docker_compose/core_stack/letsencrypt/acme.json```
 - Update ```.env``` file based on the comments in the file
-- Update ```${CONFIG_PATH}/authelia/configuration.yml``` based on the comments in the file
-- Update ```${CONFIG_PATH}/authelia/users_database.yml``` based on the comments in the file
-- Update ```${CONFIG_PATH}/prometheus/prometheus.yml``` based on the comments in the file
-- Update ```${CONFIG_PATH}/grafana/provisioning/datasources/datasource.yml``` based on the comments in the file
-- Update ```${CONFIG_PATH}/grafana/config.monitoring``` based on the comments in the file
-- Update ```${CONFIG_PATH}/promtail/promtail-config.yaml``` based on the comments in the file
-- Update ```${CONFIG_PATH}/homepage/bookmarks.yml``` based on the comments in the file
-- Update ```${CONFIG_PATH}/homepage/services.yml``` based on the comments in the file
-- Update ```${CONFIG_PATH}/homepage/settings.yml``` based on the comments in the file
-- Update ```${CONFIG_PATH}/homepage/widgets.yml``` based on the comments in the file
-- Update ```${CONFIG_PATH}/ntfy/server.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/core_stack/authelia/configuration.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/core_stack/authelia/users_database.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/grafana_stack/prometheus/prometheus.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/grafana_stack/grafana/provisioning/datasources/datasource.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/grafana_stack/grafana/config.monitoring``` based on the comments in the file
+- Update ```${CONFIG_PATH}/grafana_stack/promtail/promtail-config.yaml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/core_stack/homepage/bookmarks.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/core_stack/homepage/services.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/core_stack/homepage/settings.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/core_stack/homepage/widgets.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/extended_stack/ntfy/server.yml``` based on the comments in the file
   - Update ```base-url:```
-- ```sudo docker compose --profile all up -d --force-recreate --remove-orphans```
-- You can reach each container with the address defined in the ```.env``` file
+- ```sudo docker compose up -d --force-recreate --remove-orphans```
+- You can reach each container with the address defined in the ```.env``` files of the stack folders
 
 ---
 

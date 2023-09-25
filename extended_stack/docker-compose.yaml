@@ -1,0 +1,119 @@
+version: "3.8"
+services:
+  ###### Duplicati ######
+  duplicati:
+    image: lscr.io/linuxserver/duplicati:latest
+    container_name: duplicati
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+    volumes:
+      - ${CONFIG_PATH}/duplicati:/config
+      - ${HDD_PATH}/_backup:/backups
+      - ${MYHOME}/docker_compose/:/source_docker_compose
+      - ${MYHOME}/.bash_aliases:/.bash_aliases
+      - ${MYHOME}/.gitconfig:/.gitconfig
+      - "duplicati_source:/source"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.duplicati.entrypoints: "websecure"
+      traefik.http.routers.duplicati.rule: "Host(`${TRAEFIK_DUPLICATI_HOST}`)"
+      traefik.http.routers.duplicati.tls.certresolver: "myresolver"
+      traefik.http.routers.duplicati.middlewares: "authelia@docker"
+    ports:
+      - 8300:8300
+    network_mode: "bridge"
+    restart: unless-stopped
+
+  ###### Ntfy ######
+  ntfy:
+    image: binwiederhier/ntfy
+    container_name: ntfy
+    command:
+      - serve
+    environment:
+      - "TZ=${TZ}"
+    # user: UID:GID # optional: replace with your own user/group or uid/gid
+    volumes:
+      - ntfy_cache:/var/cache/ntfy
+      - ${CONFIG_PATH}/ntfy/:/etc/ntfy
+      - ${CONFIG_PATH}/ntfy/data/:/data
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.ntfy.entrypoints: "websecure"
+      traefik.http.routers.ntfy.rule: "Host(`${TRAEFIK_NTFY_HOST}`)"
+      traefik.http.routers.ntfy.tls: "true"
+      traefik.http.routers.ntfy.tls.certresolver: "myresolver"
+      # traefik.http.routers.ntfy.middlewares: authelia@docker
+    network_mode: "bridge"
+    # ports:
+    #   - 3300:80
+    restart: unless-stopped
+
+  ###### Pihole ######
+  pihole:
+    container_name: "pihole"
+    environment:
+      - "TZ=${TZ}"
+      - "WEBPASSWORD=${WEBPASSWORD}"
+      - "DNSMASQ_USER=${DNSMASQ_USER}"
+      - "VIRTUAL_HOST=${TRAEFIK_PIHOLE_HOST}"
+    image: "pihole/pihole:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.pihole.rule: "Host(`${TRAEFIK_PIHOLE_HOST}`)"
+      traefik.http.routers.pihole.service: "pihole"
+      traefik.http.routers.pihole.tls: "true"
+      traefik.http.routers.pihole.tls.certresolver: "myresolver"
+      traefik.http.services.pihole.loadBalancer.server.port: "80"
+      traefik.http.routers.pihole.middlewares: authelia@docker
+    network_mode: "bridge"
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "853:853/tcp"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
+      - "${CONFIG_PATH}/pihole/etc-pihole:/etc/pihole"
+
+  ###### Uptime kuma ######
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    volumes:
+      - ${CONFIG_PATH}/uptime-kuma/data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 3001:3001
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.uptime_kuma.entrypoints: "websecure"
+      traefik.http.routers.uptime_kuma.rule: "Host(`${TRAEFIK_UPTIMEKUMA_HOST}`)"
+      traefik.http.routers.uptime_kuma.tls.certresolver: "myresolver"
+      traefik.http.routers.uptime_kuma.middlewares: authelia@docker
+    restart: unless-stopped
+    network_mode: "bridge"
+    security_opt:
+      - no-new-privileges:true
+
+  ###### Watchtower ######
+  watchtower:
+    container_name: "watchtower"
+    environment:
+      - "WATCHTOWER_CLEANUP=${WATCHTOWER_CLEANUP}"
+      - "WATCHTOWER_POLL_INTERVAL=${WATCHTOWER_POLL_INTERVAL}"
+      - "TZ=${TZ}"
+    image: "containrrr/watchtower:latest"
+    network_mode: "bridge"
+    restart: "unless-stopped"
+    stdin_open: true
+    tty: true
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+volumes:
+  duplicati_source: {}
+  ntfy_cache: {}

@@ -1,0 +1,78 @@
+version: "3.8"
+services:
+  ###### Dokuwiki ######
+  dokuwiki:
+    container_name: "dokuwiki"
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+    image: "ghcr.io/linuxserver/dokuwiki:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.dokuwiki.entrypoints: "websecure"
+      traefik.http.routers.dokuwiki.rule: "Host(`${TRAEFIK_DOKUWIKI_HOST}`)"
+      traefik.http.routers.dokuwiki.tls.certresolver: "myresolver"
+      traefik.http.routers.dokuwiki.middlewares: authelia@docker
+    network_mode: "bridge"
+    restart: "unless-stopped"
+    volumes:
+      - "${CONFIG_PATH}/dokuwiki:/config"
+
+  ###### Librespeed ######
+  librespeed:
+    container_name: "librespeed"
+    image: "linuxserver/librespeed:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.librespeed.entrypoints: "websecure"
+      traefik.http.routers.librespeed.rule: "Host(`${TRAEFIK_LIBRESPEED_HOST}`)"
+      traefik.http.routers.librespeed.tls.certresolver: "myresolver"
+      traefik.http.routers.librespeed.middlewares: "authelia@docker"
+    network_mode: "bridge"
+    restart: "unless-stopped"
+    environment:
+      - "TZ=${TZ}"
+    volumes:
+      - "librespeed_data:/config"
+
+  ###### micrOS ######
+  micros-gateway:
+    image: bxnxm/micros-gateway:1.22.5
+    container_name: micros-gateway
+    environment:
+      - "TZ=${TZ}"
+      - GATEWAYIP=${GATEWAY_IP}
+    ports:
+      - "5000:5000"  # Expose Flask REST API port to host
+    network_mode: "bridge"
+    #restart: "unless-stopped"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.micros-gateway.entrypoints: "websecure"
+      traefik.http.routers.micros-gateway.rule: "Host(`${TRAEFIK_MICROS_HOST}`)"
+      traefik.http.routers.micros-gateway.tls.certresolver: "myresolver"
+      traefik.http.routers.micros-gateway.middlewares: authelia@docker
+
+  ###### Wikijs ######
+  wikijs:
+    container_name: "wikijs"
+    image: "linuxserver/wikijs:latest"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.wikijs.entrypoints: "websecure"
+      traefik.http.routers.wikijs.rule: "Host(`${TRAEFIK_WIKIJS_HOST}`)"
+      traefik.http.routers.wikijs.tls.certresolver: "myresolver"
+      traefik.http.routers.wikijs.middlewares: authelia@docker
+    network_mode: "bridge"
+    ports:
+      - "4000:3000/tcp"
+    restart: "unless-stopped"
+    environment:
+      - "TZ=${TZ}"
+    volumes:
+      - "${CONFIG_PATH}/wikijs/data:/data"
+      - "${CONFIG_PATH}/wikijs:/config"
+
+volumes:
+  librespeed_data: {}
