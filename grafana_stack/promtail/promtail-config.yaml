@@ -6,7 +6,6 @@ positions:
   filename: /tmp/positions.yaml
 
 clients:
-  # TODO update with your LOKI IP and PORT
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:

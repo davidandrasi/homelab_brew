@@ -20,7 +20,7 @@ scrape_configs:
     static_configs:
          # Add your Raspberry Pi IP address in your home network and Traefik port here
          # From Prometheus container point of view, only the metrics of itself can ba localhost, every other metrics to be scraped shall be IP address or domain name
-         - targets: ['192.168.X.Y:8080']
+         - targets: ['traefik:8080']
     #dns_sd_configs:
     #- names:
     #  - 'tasks.traefik'
@@ -31,20 +31,16 @@ scrape_configs:
     static_configs:
          # Add your Raspberry Pi IP address in your home network and node-exporter port here
          # From Prometheus container point of view, only the metrics of itself can ba localhost, every other metrics to be scraped shall be IP address or domain name
-         - targets: ['192.168.X.Y:9100']
+         - targets: ['prometheus-node-exporter:9100']
 
   - job_name: 'micros_gw_dht22'
     metrics_path: /metrics/TerraceSensor/dht22+measure
     scheme: http
     static_configs:
-      # Add your Raspberry Pi IP address in your home network and node-exporter port here
-      # From Prometheus container point of view, only the metrics of itself can ba localhost, every other metrics to be scraped shall be>
-      - targets: ['192.168.X.Y:5000']
+      - targets: ['micros-gateway:5000']
 
   - job_name: 'micros_gw_light'
     metrics_path: /metrics/TerraceSensor/light_sensor+intensity
     scheme: http
     static_configs:
-      # Add your Raspberry Pi IP address in your home network and node-exporter port here
-      # From Prometheus container point of view, only the metrics of itself can ba localhost, every other metrics to be scraped shall be>
-      - targets: ['192.168.X.Y:5000']
+      - targets: ['micros-gateway:5000']

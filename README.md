@@ -120,10 +120,8 @@ OR
 - Update ```.env``` file based on the comments in the file
 - Update ```${CONFIG_PATH}/core_stack/authelia/configuration.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/core_stack/authelia/users_database.yml``` based on the comments in the file
-- Update ```${CONFIG_PATH}/grafana_stack/prometheus/prometheus.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/grafana_stack/grafana/provisioning/datasources/datasource.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/grafana_stack/grafana/config.monitoring``` based on the comments in the file
-- Update ```${CONFIG_PATH}/grafana_stack/promtail/promtail-config.yaml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/core_stack/homepage/bookmarks.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/core_stack/homepage/services.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/core_stack/homepage/settings.yml``` based on the comments in the file
@@ -136,11 +134,6 @@ OR
 ---
 
 ## Configure the containers
-
-**- Grafana:**
-
-- Set allowed cookies of Authelia session cookie:
-  ```Home --> Connections --> Data sources --> Prometheus --> Allowed cookies: Add "authelia_session" --> Click Save & test```
 
 **- Loki:**  
 You have to configure docker to stream it's container logs into Loki directly

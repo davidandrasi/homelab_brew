@@ -23,7 +23,8 @@ services:
       traefik.http.routers.duplicati.middlewares: "authelia@docker"
     ports:
       - 8300:8300
-    network_mode: "bridge"
+    networks:
+      - homelab
     restart: unless-stopped
 
   ###### Ntfy ######
@@ -46,7 +47,8 @@ services:
       traefik.http.routers.ntfy.tls: "true"
       traefik.http.routers.ntfy.tls.certresolver: "myresolver"
       # traefik.http.routers.ntfy.middlewares: authelia@docker
-    network_mode: "bridge"
+    networks:
+      - homelab
     # ports:
     #   - 3300:80
     restart: unless-stopped
@@ -68,7 +70,8 @@ services:
       traefik.http.routers.pihole.tls.certresolver: "myresolver"
       traefik.http.services.pihole.loadBalancer.server.port: "80"
       traefik.http.routers.pihole.middlewares: authelia@docker
-    network_mode: "bridge"
+    networks:
+      - homelab
     ports:
       - "53:53/tcp"
       - "53:53/udp"
@@ -95,7 +98,8 @@ services:
       traefik.http.routers.uptime_kuma.tls.certresolver: "myresolver"
       traefik.http.routers.uptime_kuma.middlewares: authelia@docker
     restart: unless-stopped
-    network_mode: "bridge"
+    networks:
+      - homelab
     security_opt:
       - no-new-privileges:true
 
@@ -107,12 +111,19 @@ services:
       - "WATCHTOWER_POLL_INTERVAL=${WATCHTOWER_POLL_INTERVAL}"
       - "TZ=${TZ}"
     image: "containrrr/watchtower:latest"
-    network_mode: "bridge"
+    networks:
+      - homelab
     restart: "unless-stopped"
     stdin_open: true
     tty: true
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+
+networks:
+  homelab:
+    name: homelab
+    driver: bridge
+    external: false
 
 volumes:
   duplicati_source: {}

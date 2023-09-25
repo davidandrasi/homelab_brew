@@ -6,7 +6,8 @@ services:
     container_name: authelia
     volumes:
       - "${CONFIG_PATH}/authelia/:/config"
-    network_mode: "bridge"
+    networks:
+      - homelab
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.authelia.rule=Host(`${TRAEFIK_AUTHELIA_HOST}`)'
@@ -38,7 +39,8 @@ services:
       - "HOSTNAMES=${HOSTNAMES}"
       - "REFRESH_TIME=${REFRESH_TIME}"
     image: "dokeraj/dynu-updater:latest"
-    network_mode: "bridge"
+    networks:
+      - homelab
     restart: "unless-stopped"
     ports:
       - "1050:1050"
@@ -62,13 +64,15 @@ services:
       - ${HDD_PATH}/:/mnt/hdd:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
-    network_mode: "bridge"
+    networks:
+      - homelab
 
   ###### Portainer ######
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
-    network_mode: bridge
+    networks:
+      - homelab
     ports:
       - 9000:9000/tcp
     restart: unless-stopped
@@ -134,7 +138,8 @@ services:
       traefik.http.routers.api.tls.certresolver: "myresolver"
       traefik.http.routers.api.middlewares: "basic-auth@docker"
       traefik.http.middlewares.basic-auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
-    network_mode: "bridge"
+    networks:
+      - homelab
     ports:
       - "443:443"
       - "80:80"
@@ -157,10 +162,17 @@ services:
       traefik.http.routers.whoami.tls: "true"
       traefik.http.routers.whoami.tls.certresolver: "myresolver"
       traefik.http.routers.whoami.middlewares: authelia@docker
-    network_mode: "bridge"
+    networks:
+      - homelab
     restart: "unless-stopped"
     environment:
       - "TZ=${TZ}"
+
+networks:
+  homelab:
+    name: homelab
+    driver: bridge
+    external: false
 
 volumes:
   portainer_data: {}

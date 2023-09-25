@@ -10,7 +10,8 @@ services:
       - "SUBDOMAINS=${SUBDOMAINS}"
       - "TOKEN=${TOKEN}"
     image: "linuxserver/duckdns:latest"
-    network_mode: "bridge"
+    networks:
+      - homelab
     restart: "unless-stopped"
     volumes:
       - "${CONFIG_PATH}/duckdns:/config"
@@ -29,7 +30,8 @@ services:
       traefik.http.routers.heimdall.rule: "Host(`${TRAEFIK_HEIMDALL_HOST}`)"
       traefik.http.routers.heimdall.tls.certresolver: "myresolver"
       traefik.http.routers.heimdall.middlewares: authelia@docker
-    network_mode: "bridge"
+    networks:
+      - homelab
     restart: "unless-stopped"
     volumes:
       - "${CONFIG_PATH}/heimdall:/config"
@@ -44,7 +46,8 @@ services:
       traefik.http.routers.yacht.rule: "Host(`${TRAEFIK_YACHT_HOST}`)"
       traefik.http.routers.yacht.tls.certresolver: "myresolver"
       traefik.http.routers.yacht.middlewares: authelia@docker
-    network_mode: "bridge"
+    networks:
+      - homelab
     ports:
       - "8001:8000/tcp"
     restart: "unless-stopped"
@@ -53,6 +56,12 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "yacht_data:/config"
+
+networks:
+  homelab:
+    name: homelab
+    driver: bridge
+    external: false
 
 volumes:
   yacht_data: {}

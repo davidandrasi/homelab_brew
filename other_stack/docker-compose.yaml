@@ -14,7 +14,8 @@ services:
       traefik.http.routers.dokuwiki.rule: "Host(`${TRAEFIK_DOKUWIKI_HOST}`)"
       traefik.http.routers.dokuwiki.tls.certresolver: "myresolver"
       traefik.http.routers.dokuwiki.middlewares: authelia@docker
-    network_mode: "bridge"
+    networks:
+      - homelab
     restart: "unless-stopped"
     volumes:
       - "${CONFIG_PATH}/dokuwiki:/config"
@@ -29,7 +30,8 @@ services:
       traefik.http.routers.librespeed.rule: "Host(`${TRAEFIK_LIBRESPEED_HOST}`)"
       traefik.http.routers.librespeed.tls.certresolver: "myresolver"
       traefik.http.routers.librespeed.middlewares: "authelia@docker"
-    network_mode: "bridge"
+    networks:
+      - homelab
     restart: "unless-stopped"
     environment:
       - "TZ=${TZ}"
@@ -45,8 +47,9 @@ services:
       - GATEWAYIP=${GATEWAY_IP}
     ports:
       - "5000:5000"  # Expose Flask REST API port to host
-    network_mode: "bridge"
-    #restart: "unless-stopped"
+    networks:
+      - homelab
+    restart: "unless-stopped"
     labels:
       traefik.enable: "true"
       traefik.http.routers.micros-gateway.entrypoints: "websecure"
@@ -64,7 +67,8 @@ services:
       traefik.http.routers.wikijs.rule: "Host(`${TRAEFIK_WIKIJS_HOST}`)"
       traefik.http.routers.wikijs.tls.certresolver: "myresolver"
       traefik.http.routers.wikijs.middlewares: authelia@docker
-    network_mode: "bridge"
+    networks:
+      - homelab
     ports:
       - "4000:3000/tcp"
     restart: "unless-stopped"
@@ -73,6 +77,12 @@ services:
     volumes:
       - "${CONFIG_PATH}/wikijs/data:/data"
       - "${CONFIG_PATH}/wikijs:/config"
+
+networks:
+  homelab:
+    name: homelab
+    driver: bridge
+    external: false
 
 volumes:
   librespeed_data: {}

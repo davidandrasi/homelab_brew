@@ -13,13 +13,14 @@ services:
       - ${CONFIG_PATH}/grafana/provisioning/:/etc/grafana/provisioning/
     env_file:
       - ${CONFIG_PATH}/grafana/config.monitoring
-    network_mode: "bridge"
+    networks:
+      - homelab
     environment:
       - "TZ=${TZ}"
     user: "472" # this means, that the username is admin
     labels:
       traefik.enable: "true"
-      traefik.docker.network: "bridge"
+      traefik.docker.network: "homelab"
       traefik.http.routers.grafana.entrypoints: "websecure"
       traefik.http.routers.grafana.rule: "Host(`${TRAEFIK_GRAFANA_HOST}`)"
       traefik.http.routers.grafana.tls.certresolver: "myresolver"
@@ -37,7 +38,8 @@ services:
     volumes:
       - ${CONFIG_PATH}/loki:/etc/loki
     command: -config.file=/etc/loki/loki-config.yaml
-    network_mode: bridge
+    networks:
+      - homelab
     restart: unless-stopped
 
   ###### Prometheus ######
@@ -60,10 +62,11 @@ services:
       - '--web.console.templates=/usr/share/prometheus/consoles'
       - "--storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME}"
       - "--storage.tsdb.retention.size=${PROMETHEUS_RETENTION_SIZE}"
-    network_mode: "bridge"
+    networks:
+      - homelab
     labels:
       traefik.enable: "true"
-      traefik.docker.network: "bridge"
+      traefik.docker.network: "homelab"
       traefik.http.routers.prometheus.entrypoints: "websecure"
       traefik.http.routers.prometheus.rule: "Host(`${TRAEFIK_PROMETHEUS_HOST}`)"
       traefik.http.routers.prometheus.tls.certresolver: "myresolver"
@@ -90,7 +93,8 @@ services:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     ports:
       - "9100:9100"
-    network_mode: "bridge"
+    networks:
+      - homelab
 
   ###### Promtail ######
   promtail:
@@ -102,8 +106,15 @@ services:
       - /var/log:/var/log
       - ${CONFIG_PATH}/promtail:/etc/promtail
     command: -config.file=/etc/promtail/promtail-config.yaml
-    network_mode: bridge
+    networks:
+      - homelab
     restart: unless-stopped
+
+networks:
+  homelab:
+    name: homelab
+    driver: bridge
+    external: false
 
 volumes:
   prometheus_data: {}

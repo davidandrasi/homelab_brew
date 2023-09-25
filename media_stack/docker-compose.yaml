@@ -10,7 +10,8 @@ services:
       traefik.http.routers.filebrowser.rule: "Host(`${TRAEFIK_FILEBROWSER_HOST}`)"
       traefik.http.routers.filebrowser.tls.certresolver: "myresolver"
       traefik.http.routers.filebrowser.middlewares: "authelia@docker"
-    network_mode: "bridge"
+    networks:
+      - homelab
     ports:
       - "8081:8081/tcp"
     environment:
@@ -38,7 +39,8 @@ services:
       traefik.http.routers.jellyfin.rule: "Host(`${TRAEFIK_JELLYFIN_HOST}`)"
       traefik.http.routers.jellyfin.tls.certresolver: "myresolver"
       traefik.http.routers.jellyfin.middlewares: authelia@docker
-    network_mode: "bridge"
+    networks:
+      - homelab
     ports:
       - "8096:8096/tcp"
       - "8920:8920/tcp"
@@ -70,7 +72,8 @@ services:
   plex:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
-    network_mode: bridge
+    networks:
+      - homelab
     devices:
       - /dev/dri:/dev/dri # based on https://hub.docker.com/r/linuxserver/plex
     environment:
@@ -109,7 +112,8 @@ services:
       traefik.http.routers.qbittorrent.rule: "Host(`${TRAEFIK_QBITTORRENT_HOST}`)"
       traefik.http.routers.qbittorrent.tls.certresolver: "myresolver"
       traefik.http.routers.qbittorrent.middlewares: authelia@docker
-    network_mode: "bridge"
+    networks:
+      - homelab
     ports:
       - "5555:5555/tcp"
       - "6881:6881/tcp"
@@ -133,7 +137,8 @@ services:
       - "homelab_brew;/homelab_brew;yes;no;no;admin;admin;admin"
     container_name: "samba"
     image: "dperson/samba:latest"
-    network_mode: "bridge"
+    networks:
+      - homelab
     ports:
       - "137:137/udp"
       - "138:138/udp"
@@ -151,6 +156,12 @@ services:
       - "${HDD_PATH_SHARED}:/rpi_shared"
       - "${MYHOME}/homelab_brew:/homelab_brew" # TODO remove
       - "${MYHOME}/docker_compose:/docker_compose" # TODO remove
+
+networks:
+  homelab:
+    name: homelab
+    driver: bridge
+    external: false
 
 volumes:
   var_cache_samba: {}
