@@ -110,6 +110,7 @@ OR
   - ```JELLYFIN_METADATA```
   - ```JELLYFIN_TRANSCODE_CACHE```
   - ```HDD_PATH_SHARED/downloads```
+  - ```HDD_PATH_SHARED/nextcloud```
 
 ---
 
@@ -209,6 +210,7 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://hub.docker.com/r/binwiederhier/ntfy>
 - <https://uptime.kuma.pet/>
 - <https://hub.docker.com/r/linuxserver/plex>
+- <https://hub.docker.com/r/linuxserver/nextcloud>
 - <https://hub.docker.com/r/bxnxm/micros-gateway/>
 - <https://github.com/BxNxM/micrOS/>
 

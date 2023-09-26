@@ -145,6 +145,18 @@
             enableBlocks: true
             enableNowPlaying: true
 
+    - Nextcloud:
+        href: https://nextcloud.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.>
+        description: Nextcloud
+        icon: nextcloud.png
+        server: my-docker
+        container: nextcloud
+        widget:
+            type: nextcloud
+            url: https://nextcloud.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.>
+            username: username
+            password: password
+
     - Filebrowser:
         href: https://filebrowser.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
         description: Filebrowser
