@@ -47,7 +47,7 @@ services:
 
   ###### Homepage ######
   homepage:
-    image: ghcr.io/benphelps/homepage:latest
+    image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     ports:
       - 3002:3000
