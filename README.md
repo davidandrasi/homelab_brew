@@ -218,6 +218,7 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://hub.docker.com/r/linuxserver/plex>
 - <https://hub.docker.com/r/linuxserver/nextcloud>
 - <https://hub.docker.com/r/hkotel/mealie>
+- <https://hub.docker.com/r/excalidraw/excalidraw>
 - <https://hub.docker.com/r/bxnxm/micros-gateway/>
 - <https://github.com/BxNxM/micrOS/>
 

@@ -20,6 +20,26 @@ services:
     volumes:
       - "${CONFIG_PATH}/dokuwiki:/config"
 
+  ###### Excalidraw ######
+  excalidraw:
+    container_name: excalidraw
+    image: docker.io/excalidraw/excalidraw:latest
+    ports:
+      - 8003:80
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+    networks:
+      - homelab
+    restart: "unless-stopped"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.excalidraw.entrypoints: "websecure"
+      traefik.http.routers.excalidraw.rule: "Host(`${TRAEFIK_EXCALIDRAW_HOST}`)"
+      traefik.http.routers.excalidraw.tls.certresolver: "myresolver"
+      traefik.http.routers.excalidraw.middlewares: authelia@docker
+
   ###### Librespeed ######
   librespeed:
     container_name: "librespeed"

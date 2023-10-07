@@ -193,6 +193,13 @@
 #        server: my-docker
 #        container: heimdall
 
+    - Excalidraw:
+        href: https://excalidraw.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
+        description: Excalidraw
+        icon: excalidraw.png
+        server: my-docker
+        container: excalidraw
+
     - Mealie:
         href: https://mealie.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
         description: Mealie
