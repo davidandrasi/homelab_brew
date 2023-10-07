@@ -38,6 +38,28 @@ services:
     volumes:
       - "librespeed_data:/config"
 
+  ###### Mealie ######
+  mealie:
+    container_name: mealie
+    image: hkotel/mealie:latest
+    ports:
+      - 9925:80
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+    volumes:
+    - ${CONFIG_PATH}/mealie:/app/data
+    networks:
+      - homelab
+    restart: "unless-stopped"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.mealie.entrypoints: "websecure"
+      traefik.http.routers.mealie.rule: "Host(`${TRAEFIK_MEALIE_HOST}`)"
+      traefik.http.routers.mealie.tls.certresolver: "myresolver"
+      traefik.http.routers.mealie.middlewares: authelia@docker
+
   ###### micrOS ######
   micros-gateway:
     image: bxnxm/micros-gateway:1.22.5

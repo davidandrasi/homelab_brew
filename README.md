@@ -178,6 +178,12 @@ You have to configure docker to stream it's container logs into Loki directly
 - After setting up the topic, lets try:
   - ```curl --user "username:password" -d "Hey there" https://ntfy.yourdomain.example.com/test```
 
+**- Mealie:**  
+
+- First time login info (Highly suggesting to change it after the first login):
+  - Username: changeme@email.com
+  - Password: MyPassword
+
 ---
 
 ## Containers used
@@ -211,6 +217,7 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://uptime.kuma.pet/>
 - <https://hub.docker.com/r/linuxserver/plex>
 - <https://hub.docker.com/r/linuxserver/nextcloud>
+- <https://hub.docker.com/r/hkotel/mealie>
 - <https://hub.docker.com/r/bxnxm/micros-gateway/>
 - <https://github.com/BxNxM/micrOS/>
 
