@@ -221,7 +221,7 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://hub.docker.com/r/excalidraw/excalidraw>
 - <https://hub.docker.com/r/bxnxm/micros-gateway/>
 - <https://github.com/BxNxM/micrOS/>
-
+- <https://github.com/homebridge/docker-homebridge>
 ---
 
 ## Useful links
@@ -236,3 +236,4 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://www.youtube.com/@TechnoTim>
 - <https://www.youtube.com/@christianlempa>
 - <https://ntfy.sh/>
+- <https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Docker>
