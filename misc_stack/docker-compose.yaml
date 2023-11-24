@@ -40,6 +40,29 @@ services:
       traefik.http.routers.excalidraw.tls.certresolver: "myresolver"
       traefik.http.routers.excalidraw.middlewares: authelia@docker
 
+  ###### Homebridge ######
+  homebridge:
+    container_name: "homebridge"
+    image: homebridge/homebridge:latest
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.homebridge.entrypoints: "websecure"
+      traefik.http.routers.homebridge.rule: "Host(`${TRAEFIK_HOMEBRIDGE_HOST}`)"
+      traefik.http.routers.homebridge.tls.certresolver: "myresolver"
+      traefik.http.routers.homebridge.middlewares: "authelia@docker"
+    networks:
+      - homelab
+    restart: "unless-stopped"
+    environment:
+      - "TZ=${TZ}"
+    volumes:
+      - ${CONFIG_PATH}/homebridge:/homebridge
+    logging:
+      driver: json-file
+      options:
+        max-size: "10mb"
+        max-file: "1"
+
   ###### Librespeed ######
   librespeed:
     container_name: "librespeed"

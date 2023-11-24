@@ -193,6 +193,18 @@
 #        server: my-docker
 #        container: heimdall
 
+    - Homebridge:
+        href: https://homebridge.subdomain.mydomain.org # Update with your domain address configured in .env file next to the doc>
+        description: Homebridge
+        icon: homebridge.png
+        server: my-docker
+        container: homebridge
+        widget:
+          type: homebridge
+          url: https://homebridge.subdomain.mydomain.org # Update with your domain address configured in .env file next to the doc>
+          username: homebridge_admin
+          password: homebridge_password
+
     - Excalidraw:
         href: https://excalidraw.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
         description: Excalidraw
