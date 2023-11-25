@@ -121,6 +121,7 @@ OR
 - Update ```.env``` file based on the comments in the file
 - Update ```${CONFIG_PATH}/core_stack/authelia/configuration.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/core_stack/authelia/users_database.yml``` based on the comments in the file
+- Update ```${CONFIG_PATH}/core_stack/traefik/rules.toml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/grafana_stack/grafana/provisioning/datasources/datasource.yml``` based on the comments in the file
 - Update ```${CONFIG_PATH}/grafana_stack/grafana/config.monitoring``` based on the comments in the file
 - Update ```${CONFIG_PATH}/core_stack/homepage/bookmarks.yml``` based on the comments in the file

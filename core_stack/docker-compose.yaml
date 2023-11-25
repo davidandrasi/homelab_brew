@@ -96,6 +96,8 @@ services:
     command:
       ### Basic ###
       - "traefik"
+      - "--providers.file=true"
+      - "--providers.file.filename=/etc/traefik/rules.toml"
       - "--log.level=DEBUG"
       - "--api.dashboard=true"
       - "--api.insecure=false"
@@ -150,6 +152,8 @@ services:
     volumes:
       - "${CONFIG_PATH}/letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "${CONFIG_PATH}/traefik/rules.toml:/etc/traefik/rules.toml"
+
 
   ###### Whoami ######
   whoami:

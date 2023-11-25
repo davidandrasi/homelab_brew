@@ -44,17 +44,18 @@ services:
   homebridge:
     container_name: "homebridge"
     image: homebridge/homebridge:latest
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.homebridge.entrypoints: "websecure"
-      traefik.http.routers.homebridge.rule: "Host(`${TRAEFIK_HOMEBRIDGE_HOST}`)"
-      traefik.http.routers.homebridge.tls.certresolver: "myresolver"
-      traefik.http.routers.homebridge.middlewares: "authelia@docker"
-    networks:
-      - homelab
+    # Traefik rules can be found at core_stack/traefik/rules.toml
+    network_mode: "host"
+    expose:
+      - 51774
+      - 8581
     restart: "unless-stopped"
     environment:
-      - "TZ=${TZ}"
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - HOMEBRIDGE_CONFIG_UI=1
+      - HOMEBRIDGE_CONFIG_UI_PORT=51774
     volumes:
       - ${CONFIG_PATH}/homebridge:/homebridge
     logging:

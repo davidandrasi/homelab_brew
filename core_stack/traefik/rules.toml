@@ -1,0 +1,15 @@
+[http.routers]
+# Define a connection between requests and services
+     [http.routers.homebridge]
+        rule = "Host(`homebridge.yourdomain.org`)" # UPDATE
+        middlewares = ["authelia@docker"]
+        entrypoints = ["websecure"]
+        service = "homebridge"
+     [http.routers.homebridge.tls]
+        certResolver = "myresolver"
+
+[http.services]
+# Define how to reach an existing service on our infrastructure
+     [http.services.homebridge.loadBalancer]
+        [[http.services.homebridge.loadBalancer.servers]]
+           url = "http://192.168.0.1:8581" # UPDATE
