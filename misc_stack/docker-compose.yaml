@@ -106,7 +106,7 @@ services:
 
   ###### micrOS ######
   micros-gateway:
-    image: bxnxm/micros-gateway:1.22.5
+    image: bxnxm/micros-gateway:1.59.4
     container_name: micros-gateway
     environment:
       - "TZ=${TZ}"
