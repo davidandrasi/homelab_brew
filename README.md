@@ -217,6 +217,8 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://hub.docker.com/r/binwiederhier/ntfy>
 - <https://uptime.kuma.pet/>
 - <https://hub.docker.com/r/linuxserver/plex>
+- <https://hub.docker.com/r/tautulli/tautulli>
+- <https://hub.docker.com/r/linuxserver/calibre-web>
 - <https://hub.docker.com/r/linuxserver/nextcloud>
 - <https://hub.docker.com/r/hkotel/mealie>
 - <https://hub.docker.com/r/excalidraw/excalidraw>
@@ -237,4 +239,5 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://www.youtube.com/@TechnoTim>
 - <https://www.youtube.com/@christianlempa>
 - <https://ntfy.sh/>
+- <https://tautulli.com/>
 - <https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Docker>

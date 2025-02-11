@@ -132,6 +132,20 @@
             url: https://plex.subdomain.mydomain.org
             key: mykeygoeshere # see https://www.plexopedia.com/plex-media-server/general/plex-token/
 
+    - Tautulli:
+        href: https://tautulli.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docke>
+        description: Tautulli
+        icon: tautulli.png
+        server: my-docker
+        container: tautulli
+        widget:
+            type: tautulli
+            url: https://tautulli.subdomain.mydomain.org # Update with your domain address configured in .env file
+            key: apikey # update with apikey from tautulli website: settings/web interface/api key
+            enableUser: true # optional, defaults to false
+            showEpisodeNumber: true # optional, defaults to false
+            expandOneStreamToTwoRows: false # optional, defaults to true
+
     - Jellyfin:
         href: https://jellyfin.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
         description: Jellyfin
@@ -154,6 +168,18 @@
         widget:
             type: nextcloud
             url: https://nextcloud.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.>
+            username: username
+            password: password
+
+    - Calibre-web:
+        href: https://calibreweb.subdomain.mydomain.org # Update with your domain address configured in .env file next to the dock>
+        description: Calibre-Web
+        icon: calibre-web.png
+        server: my-docker
+        container: calibre-web
+        widget:
+            type: calibreweb
+            url: https://calibreweb.subdomain.mydomain.org # Update with your domain address configured in .env file
             username: username
             password: password
 

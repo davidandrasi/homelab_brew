@@ -1,5 +1,30 @@
 version: "3.8"
 services:
+  ###### Calibre-web ######
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+      - DOCKER_MODS=linuxserver/mods:universal-calibre #optional
+      - OAUTHLIB_RELAX_TOKEN_SCOPE=1 #optional
+    volumes:
+      - "${CONFIG_PATH}/calibreweb:/config"
+      - "${CONFIG_PATH}/calibreweb/books:/books"
+    networks:
+      - homelab
+    ports:
+      - 8083:8083
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.calibre-web.entrypoints: "websecure"
+      traefik.http.routers.calibre-web.rule: "Host(`${TRAEFIK_CALIBREWEB_HOST}`)"
+      traefik.http.routers.calibre-web.tls.certresolver: "myresolver"
+      traefik.http.routers.calibre-web.middlewares: "authelia@docker"
+    restart: unless-stopped
+
   ###### Filebrowser ######
   filebrowser:
     container_name: "filebrowser"
@@ -178,6 +203,28 @@ services:
       - "${HDD_PATH_SHARED}:/rpi_shared"
       - "${MYHOME}/homelab_brew:/homelab_brew" # TODO remove
       - "${MYHOME}/docker_compose:/docker_compose" # TODO remove
+
+  ###### Tautulli ######
+  tautulli:
+    image: ghcr.io/tautulli/tautulli
+    container_name: tautulli
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.tautulli.entrypoints: "websecure"
+      traefik.http.routers.tautulli.rule: "Host(`${TRAEFIK_TAUTULLI_HOST}`)"
+      traefik.http.routers.tautulli.tls.certresolver: "myresolver"
+      traefik.http.routers.tautulli.middlewares: authelia@docker
+    volumes:
+      - "${CONFIG_PATH}/tautulli:/config"
+    environment:
+      - "PGID=${PGID}"
+      - "PUID=${PUID}"
+      - "TZ=${TZ}"
+    ports:
+      - 8181:8181
+    networks:
+      - homelab
 
 networks:
   homelab:
