@@ -85,13 +85,14 @@ services:
   ###### Mealie ######
   mealie:
     container_name: mealie
-    image: hkotel/mealie:latest
+    image: ghcr.io/mealie-recipes/mealie:v2.8.0
     ports:
-      - 9925:80
+      - 9925:9000
     environment:
       - "PGID=${PGID}"
       - "PUID=${PUID}"
       - "TZ=${TZ}"
+      - "BASE_URL=${TRAEFIK_MEALIE_HOST}"
     volumes:
     - ${CONFIG_PATH}/mealie:/app/data
     networks:
