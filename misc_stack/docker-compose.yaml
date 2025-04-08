@@ -40,29 +40,37 @@ services:
       traefik.http.routers.excalidraw.tls.certresolver: "myresolver"
       traefik.http.routers.excalidraw.middlewares: authelia@docker
 
-  ###### Homebridge ######
-  homebridge:
-    container_name: "homebridge"
-    image: homebridge/homebridge:latest
-    # Traefik rules can be found at core_stack/traefik/rules.toml
-    network_mode: "host"
-    expose:
-      - 51774
-      - 8581
-    restart: "unless-stopped"
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - HOMEBRIDGE_CONFIG_UI=1
-      - HOMEBRIDGE_CONFIG_UI_PORT=51774
+  ###### Homeassistant ######
+  homeassistant:
+    image: "ghcr.io/home-assistant/home-assistant:latest"
+    container_name: homeassistant
+    restart: unless-stopped
+    networks:
+      - homelab
+    ports:
+      - 8123:8123
     volumes:
-      - ${CONFIG_PATH}/homebridge:/homebridge
-    logging:
-      driver: json-file
-      options:
-        max-size: "10mb"
-        max-file: "1"
+      - ${CONFIG_PATH}/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+      - "/var/run/dbus:/var/run/dbus"
+      - "/run/dbus:/run/dbus"
+      - "/var/lib/bluetooth:/var/lib/bluetooth"
+      - "/etc/bluetooth:/etc/bluetooth"
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    security_opt:
+      - apparmor=unconfined
+    environment:
+      - "TZ=${TZ}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.homeassistant.entrypoints: "websecure"
+      traefik.http.routers.homeassistant.rule: "Host(`${TRAEFIK_HA_HOST}`)"
+      traefik.http.routers.homeassistant.tls.certresolver: "myresolver"
+      traefik.http.routers.homeassistant.middlewares: authelia@docker
+      traefik.http.services.homeassistant.loadbalancer.server.port: 8123
 
   ###### Librespeed ######
   librespeed:
