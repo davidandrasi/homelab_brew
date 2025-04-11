@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   ###### Authelia ######
   authelia:
@@ -142,8 +141,7 @@ services:
       traefik.http.routers.api.middlewares: "basic-auth@docker"
       traefik.http.middlewares.basic-auth.basicauth.users: ${ADMIN_USER}:${ADMIN_PASSWORD},${USER1}:${USER1_PASSWORD}
     networks:
-      homelab:
-        ipv4_address: 172.18.0.4 # for static subnet for the homeassistant container
+      - homelab
     ports:
       - "443:443"
       - "80:80"

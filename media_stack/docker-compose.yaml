@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   ###### Calibre-web ######
   calibre-web:
