@@ -185,6 +185,13 @@ You have to configure docker to stream it's container logs into Loki directly
   - Username: changeme@email.com
   - Password: MyPassword
 
+**- Ollama:**  
+
+- Connect to Ollama docker container from command line:
+  - ```docker exec -it ollama sh```
+  - Enter command to download models from [Ollama website](https://ollama.com/search), e.g.:
+    - ```ollama run deepseek-r1```
+
 ---
 
 ## Containers used
@@ -225,6 +232,9 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://hub.docker.com/r/bxnxm/micros-gateway/>
 - <https://github.com/BxNxM/micrOS/>
 - <https://github.com/homebridge/docker-homebridge>
+- <https://hub.docker.com/r/ollama/ollama>
+- <https://github.com/open-webui/open-webui/pkgs/container/open-webui>
+
 ---
 
 ## Useful links
@@ -241,3 +251,4 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://ntfy.sh/>
 - <https://tautulli.com/>
 - <https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Docker>
+- <https://ollama.com/search>

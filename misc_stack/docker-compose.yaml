@@ -1,4 +1,47 @@
 services:
+  ###### Ollama ######
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - "${CONFIG_PATH}/ollama:/root/.ollama"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.ollama.entrypoints: "websecure"
+      traefik.http.routers.ollama.rule: "Host(`${TRAEFIK_OLLAMA_HOST}`)"
+      traefik.http.routers.ollama.tls.certresolver: "myresolver"
+      traefik.http.routers.ollama.middlewares: authelia@docker
+    networks:
+      - homelab
+
+  ###### Open-WebUI ######
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3003:8080"
+    volumes:
+      - "${CONFIG_PATH}/openwebui:/app/backend/data"
+    environment:
+      - OLLAMA_BASE_URLS=http://ollama:11434
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.open-webui.entrypoints: "websecure"
+      traefik.http.routers.open-webui.rule: "Host(`${TRAEFIK_OPENWEBUI_HOST}`)"
+      traefik.http.routers.open-webui.tls.certresolver: "myresolver"
+      traefik.http.routers.open-webui.middlewares: authelia@docker
+      traefik.http.services.open-webui.loadbalancer.server.port: "8080"
+    networks:
+      - homelab
+
   ###### Dokuwiki ######
   dokuwiki:
     container_name: "dokuwiki"
