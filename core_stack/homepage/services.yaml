@@ -230,6 +230,20 @@
             url: https://homeassistant.subdomain.mydomain.org # Update with your domain address configured in .env file next to the doc>
             key: key # Update with your key
 
+    - Ollama:
+        href: https://ollama.subdomain.mydomain.org # Update with your domain address configured in .env file next to the doc>
+        description: Ollama
+        icon: ollama.png
+        server: my-docker
+        container: ollama
+
+    - Open-WebUI:
+        href: https://openwebui.subdomain.mydomain.org # Update with your domain address configured in .env file next to the doc>
+        description: Open-WebUI
+        icon: open-webui.png
+        server: my-docker
+        container: open-webui
+
     - Excalidraw:
         href: https://excalidraw.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
         description: Excalidraw
