@@ -192,6 +192,11 @@ You have to configure docker to stream it's container logs into Loki directly
   - Enter command to download models from [Ollama website](https://ollama.com/search), e.g.:
     - ```ollama run deepseek-r1```
 
+**- n8n:**  
+
+- Configure the basic authentication values in ```${CONFIG_PATH}/misc_stack/.env``` before the first start.
+- Open https://n8n.subdomain.mydomain.org (update with the domain you set in ```.env```) and complete the onboarding wizard to create your first user.
+
 ---
 
 ## Containers used
@@ -233,6 +238,7 @@ You have to configure docker to stream it's container logs into Loki directly
 - <https://github.com/BxNxM/micrOS/>
 - <https://github.com/homebridge/docker-homebridge>
 - <https://hub.docker.com/r/ollama/ollama>
+- <https://hub.docker.com/r/n8nio/n8n>
 - <https://github.com/open-webui/open-webui/pkgs/container/open-webui>
 
 ---

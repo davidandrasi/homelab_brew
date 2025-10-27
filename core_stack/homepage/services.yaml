@@ -244,6 +244,13 @@
         server: my-docker
         container: open-webui
 
+    - n8n:
+        href: https://n8n.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
+        description: n8n
+        icon: n8n.png
+        server: my-docker
+        container: n8n
+
     - Excalidraw:
         href: https://excalidraw.subdomain.mydomain.org # Update with your domain address configured in .env file next to the docker-compose.yaml
         description: Excalidraw
